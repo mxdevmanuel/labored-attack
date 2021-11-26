@@ -1,17 +1,17 @@
 ---
 version: '3.1'
-
 services:
-
   db:
     image: postgres
     restart: always
+    volumes:
+      - db-path:/var/lib/postgres/data
     ports:
       - 5432:5432
     environment:
       POSTGRES_USER: helloworld
       POSTGRES_PASSWORD: example
-      POSTGRES_DB: helloworld
+      POSTGRES_DB: laboredattack
 
   adminer:
     image: adminer
@@ -20,3 +20,5 @@ services:
       - "db:postgres"
     ports:
       - 8080:8080
+volumes:
+  db-path:

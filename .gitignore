@@ -241,3 +241,8 @@ tags
 # End of https://www.toptal.com/developers/gitignore/api/linux,vim,node,react,nextjs,git,direnv,yarn,visualstudiocode
 
 .projectvars
+
+# bundle
+packages/**/*.d.ts
+packages/**/*.js
+
