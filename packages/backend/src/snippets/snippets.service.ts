@@ -12,4 +12,32 @@ export class SnippetsService {
   async getAll(): Promise<Snippet[]> {
     return this.snippetRepository.find();
   }
+
+  async findById(id: string): Promise<Snippet> {
+    return this.snippetRepository.findOne({ id });
+  }
+
+  async create(
+    code: string,
+    language: string,
+    title?: string,
+  ): Promise<Snippet> {
+    const snippet = this.snippetRepository.create({ title, code, language });
+    return await this.snippetRepository.save(snippet);
+  }
+
+  async update(id: string, code?: string, language?: string, title?: string) {
+    const snippet = await this.snippetRepository.preload({
+      id,
+      code,
+      language,
+      title,
+    });
+    return await this.snippetRepository.save(snippet);
+  }
+
+  async delete(id: string): Promise<string> {
+    await this.snippetRepository.delete(id);
+    return `Snippet ${id} deleted.`;
+  }
 }
