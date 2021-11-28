@@ -1,15 +1,15 @@
 import { TypeOrmModule } from '@nestjs/typeorm';
-import { Module, Logger } from '@nestjs/common';
+import { Module } from '@nestjs/common';
 import { Snippet } from '@entities/snippet.entity';
+import { User } from '@entities/user.entity';
 
 const dburl = process.env.DATABASE_URL;
-Logger.log(dburl);
 @Module({
   imports: [
     TypeOrmModule.forRoot({
       type: 'postgres',
       url: dburl,
-      entities: [Snippet],
+      entities: [Snippet, User],
       synchronize: true,
     }),
   ],

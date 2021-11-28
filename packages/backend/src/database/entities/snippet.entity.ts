@@ -3,8 +3,10 @@ import {
   PrimaryGeneratedColumn,
   CreateDateColumn,
   UpdateDateColumn,
+  ManyToOne,
   Column,
 } from 'typeorm';
+import { User } from './user.entity';
 
 @Entity('snippet')
 export class Snippet {
@@ -19,6 +21,9 @@ export class Snippet {
 
   @Column('text')
   code!: string;
+
+  @ManyToOne(() => User, (user) => user.snippets)
+  owner!: User;
 
   @CreateDateColumn()
   created!: Date;
