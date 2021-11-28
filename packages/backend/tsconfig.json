@@ -11,7 +11,9 @@
     "outDir": "./dist",
     "baseUrl": "./",
     "paths": {
-      "@entities/*": ["src/database/entities/*"]
+      "@entities/*": ["src/database/entities/*"],
+      "@users/*": ["src/users/*"],
+      "@auth/*": ["src/auth/*"]
     },
     "incremental": true,
     "skipLibCheck": true,

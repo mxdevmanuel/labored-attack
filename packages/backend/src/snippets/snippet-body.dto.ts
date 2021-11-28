@@ -1,5 +1,4 @@
 import { IsDefined, IsNotEmpty, MaxLength, IsOptional } from 'class-validator';
-import * as _ from 'lodash';
 
 export class SnippetPostBodyDTO {
   @MaxLength(50)
