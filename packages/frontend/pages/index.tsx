@@ -1,4 +1,4 @@
-import Head from 'next/head'
+import Head from 'next/head';
 
 export default function Home() {
   return (
@@ -16,12 +16,12 @@ export default function Home() {
           </a>
         </h1>
 
-        <p className="mt-3 text-2xl">
+        <span className="mt-3 text-2xl">
           Get started by editing{' '}
           <code className="p-3 font-mono text-lg bg-gray-100 rounded-md">
             pages/index.js
           </code>
-        </p>
+        </span>
 
         <div className="flex flex-wrap items-center justify-around max-w-4xl mt-6 sm:w-full">
           <a
@@ -78,5 +78,5 @@ export default function Home() {
         </a>
       </footer>
     </div>
-  )
+  );
 }

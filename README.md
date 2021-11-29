@@ -1,2 +1,1 @@
-# Labored Attack
-## or the snippets demo
+# Labored Attack <small>Or the snippets demo project</small>
