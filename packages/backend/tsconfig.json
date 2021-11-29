@@ -11,9 +11,10 @@
     "outDir": "./dist",
     "baseUrl": "./",
     "paths": {
+      "@acl/*": ["src/acl/*"],
+      "@auth/*": ["src/auth/*"],
       "@entities/*": ["src/database/entities/*"],
-      "@users/*": ["src/users/*"],
-      "@auth/*": ["src/auth/*"]
+      "@users/*": ["src/users/*"]
     },
     "incremental": true,
     "skipLibCheck": true,
