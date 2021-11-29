@@ -245,4 +245,6 @@ tags
 # bundle
 packages/**/*.d.ts
 packages/**/*.js
-
+!packages/**/postcss.config.js
+!packages/**/tailwind.config.js
+!packages/**/next-env.d.ts
