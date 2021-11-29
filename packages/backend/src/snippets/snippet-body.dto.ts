@@ -1,4 +1,13 @@
-import { IsDefined, IsNotEmpty, MaxLength, IsOptional } from 'class-validator';
+import {
+  IsDefined,
+  IsNotEmpty,
+  MaxLength,
+  IsOptional,
+  IsIn,
+} from 'class-validator';
+import hljs from 'highlight.js';
+
+const languages = hljs.listLanguages();
 
 export class SnippetPostBodyDTO {
   @MaxLength(50)
@@ -11,6 +20,7 @@ export class SnippetPostBodyDTO {
   @IsDefined()
   @IsNotEmpty()
   @MaxLength(50)
+  @IsIn(languages)
   language!: string;
 }
 
