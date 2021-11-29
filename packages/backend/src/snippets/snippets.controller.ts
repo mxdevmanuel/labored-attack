@@ -11,14 +11,14 @@ import {
   UseGuards,
   UnauthorizedException,
 } from '@nestjs/common';
-import { CaslAbilityFactory } from '@acl/casl-ability.factory';
+import { Request as Req } from 'express';
 import { JwtAuthGuard } from '@auth/jwt-auth.guard';
+import { SnippetsService } from './snippets.service';
+import { CaslAbilityFactory } from '@acl/casl-ability.factory';
+import { SnippetPostBodyDTO, SnippetPutBodyDTO } from './snippet-body.dto';
 import { ValidatedTokenUser } from '@auth/auth.types';
 import { Action } from '@auth/constants';
 import { Snippet } from '@entities/snippet.entity';
-import { Request as Req } from 'express';
-import { SnippetsService } from './snippets.service';
-import { SnippetPostBodyDTO, SnippetPutBodyDTO } from './snippet-body.dto';
 
 @Controller('snippets')
 export class SnippetsController {
