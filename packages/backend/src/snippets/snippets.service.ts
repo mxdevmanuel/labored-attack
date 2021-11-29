@@ -2,11 +2,13 @@ import { Injectable } from '@nestjs/common';
 import { InjectRepository } from '@nestjs/typeorm';
 import { Repository } from 'typeorm';
 import { Snippet } from '@entities/snippet.entity';
+import { User } from '@entities/user.entity';
 
 @Injectable()
 export class SnippetsService {
   constructor(
     @InjectRepository(Snippet) private snippetRepository: Repository<Snippet>,
+    @InjectRepository(User) private userRepository: Repository<User>,
   ) {}
 
   async getAll(): Promise<Snippet[]> {
@@ -20,9 +22,15 @@ export class SnippetsService {
   async create(
     code: string,
     language: string,
+    userId: string,
     title?: string,
   ): Promise<Snippet> {
-    const snippet = this.snippetRepository.create({ title, code, language });
+    const snippet = this.snippetRepository.create({
+      title,
+      code,
+      language,
+    });
+    snippet.owner = await this.userRepository.findOne(userId);
     return await this.snippetRepository.save(snippet);
   }
 
