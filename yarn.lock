@@ -1209,6 +1209,11 @@
   dependencies:
     "@types/superagent" "*"
 
+"@types/validator@^13.7.0":
+  version "13.7.0"
+  resolved "https://registry.yarnpkg.com/@types/validator/-/validator-13.7.0.tgz#fa25263656d234473025c2d48249a900053c355a"
+  integrity sha512-+jBxVvXVuggZOrm04NR8z+5+bgoW4VZyLzUO+hmPPW1mVFL/HaitLAkizfv4yg9TbG8lkfHWVMQ11yDqrVVCzA==
+
 "@types/yargs-parser@*":
   version "20.2.1"
   resolved "https://registry.yarnpkg.com/@types/yargs-parser/-/yargs-parser-20.2.1.tgz#3b9ce2489919d9e4fea439b76916abc34b2df129"
@@ -2233,6 +2238,11 @@ clone@^1.0.2:
   version "1.0.4"
   resolved "https://registry.yarnpkg.com/clone/-/clone-1.0.4.tgz#da309cc263df15994c688ca902179ca3c7cd7c7e"
   integrity sha1-2jCcwmPfFZlMaIypAheco8fNfH4=
+
+clsx@^1.1.1:
+  version "1.1.1"
+  resolved "https://registry.yarnpkg.com/clsx/-/clsx-1.1.1.tgz#98b3134f9abbdf23b2663491ace13c5c03a73188"
+  integrity sha512-6/bPho624p3S2pMyvP5kKBPXnI3ufHLObBFCfgx+LkeR5lg2XYy2hqZqUf45ypD8COn2bhgGJSUE+l5dhNBieA==
 
 co@^4.6.0:
   version "4.6.0"
