@@ -2,9 +2,20 @@
   "name": "labored-attack",
   "version": "0.0.1",
   "description": "ne(s/x)tjs demo project",
-  "workspaces": ["packages/*"],
+  "workspaces": [
+    "packages/*"
+  ],
+  "scripts": {
+    "postinstall": "husky install"
+  },
   "repository": "https://github.com/mxdevmanuel/labored-attack.git",
   "author": "Manuel Morales",
   "license": "MIT",
-  "private": true
+  "private": true,
+  "devDependencies": {
+    "husky": "^7.0.4"
+  },
+  "dependencies": {
+    "@yarnpkg/plugin-dlx": "^3.1.1"
+  }
 }
