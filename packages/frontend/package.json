@@ -9,16 +9,19 @@
   },
   "dependencies": {
     "axios": "^0.24.0",
+    "clsx": "^1.1.1",
     "dayjs": "^1.10.7",
     "highlight.js": "^11.3.1",
     "next": "latest",
     "react": "^17.0.2",
-    "react-dom": "^17.0.2"
+    "react-dom": "^17.0.2",
+    "validator": "^13.7.0"
   },
   "devDependencies": {
     "@types/highlightjs": "^9.12.2",
     "@types/node": "^16.11.10",
     "@types/react": "^17.0.37",
+    "@types/validator": "^13.7.0",
     "autoprefixer": "^10.2.6",
     "postcss": "^8.3.5",
     "tailwindcss": "^2.2.4",
