@@ -10,6 +10,7 @@ import hljs from 'highlight.js';
 const languages = hljs.listLanguages();
 
 export class SnippetPostBodyDTO {
+  @IsOptional()
   @MaxLength(50)
   title?: string;
 

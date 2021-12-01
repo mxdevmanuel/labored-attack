@@ -14,7 +14,7 @@ export class Snippet {
   @PrimaryGeneratedColumn('uuid')
   id!: string;
 
-  @Column('varchar', { length: 50 })
+  @Column('varchar', { length: 50, nullable: true })
   title!: string;
 
   @Column('varchar', { length: 50 })

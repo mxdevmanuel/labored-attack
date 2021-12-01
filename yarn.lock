@@ -1214,11 +1214,6 @@
   dependencies:
     "@types/superagent" "*"
 
-"@types/validator@^13.7.0":
-  version "13.7.0"
-  resolved "https://registry.yarnpkg.com/@types/validator/-/validator-13.7.0.tgz#fa25263656d234473025c2d48249a900053c355a"
-  integrity sha512-+jBxVvXVuggZOrm04NR8z+5+bgoW4VZyLzUO+hmPPW1mVFL/HaitLAkizfv4yg9TbG8lkfHWVMQ11yDqrVVCzA==
-
 "@types/yargs-parser@*":
   version "20.2.1"
   resolved "https://registry.yarnpkg.com/@types/yargs-parser/-/yargs-parser-20.2.1.tgz#3b9ce2489919d9e4fea439b76916abc34b2df129"
@@ -7057,6 +7052,11 @@ v8-to-istanbul@^8.1.0:
     "@types/istanbul-lib-coverage" "^2.0.1"
     convert-source-map "^1.6.0"
     source-map "^0.7.3"
+
+validate.js@^0.13.1:
+  version "0.13.1"
+  resolved "https://registry.yarnpkg.com/validate.js/-/validate.js-0.13.1.tgz#b58bfac04a0f600a340f62e5227e70d95971e92a"
+  integrity sha512-PnFM3xiZ+kYmLyTiMgTYmU7ZHkjBZz2/+F0DaALc/uUtVzdCt1wAosvYJ5hFQi/hz8O4zb52FQhHZRC+uVkJ+g==
 
 validator@^13.7.0:
   version "13.7.0"

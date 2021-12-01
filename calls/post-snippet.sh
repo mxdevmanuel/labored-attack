@@ -6,5 +6,5 @@ curl -sS http://localhost:3000/snippets\
 	-H "Accept:application/json" \
 	-H "Content-Type:application/json" \
 	-H "Authorization: Bearer $token" \
-	-d '{"title":"lua hello world","code":"print(\"Hello world!\");", "language":"lua"}' \
+	-d '{"code":"print(\"Hello world!\");", "language":"lua"}' \
 	-X POST

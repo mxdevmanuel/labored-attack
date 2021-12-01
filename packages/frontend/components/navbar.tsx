@@ -16,12 +16,14 @@ interface NavBarProps {
 
 export default function NavBar({ showSignUpButton = true }: NavBarProps) {
   return (
-    <nav className="flex flex-row w-full bg-sky-900 p-6 items-center justify-start">
-      <Link href="/">
-        <span className="text-orange-400 font-publicsans text-5xl flex-grow cursor-pointer">
-          Snipster
-        </span>
-      </Link>
+    <nav className="flex flex-row w-full bg-sky-900 p-6 items-center justify-start font-publicsans">
+      <div className="flex-grow ">
+        <Link href="/">
+          <span className="text-orange-400 text-5xl cursor-pointer">
+            Snipster
+          </span>
+        </Link>
+      </div>
       <span className={link}>Explore</span>
       <Link href="/login">
         <span className={clsx(link, linkButton, { hidden: !showSignUpButton })}>

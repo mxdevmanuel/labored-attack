@@ -1,5 +1,6 @@
 const colors = require('tailwindcss/colors');
 // Color pallete sky-900 sky-700/600 indigo-200 orange-400
+// https://colorhunt.co/palette/2e4c6d396eb0daddfcfc997c
 module.exports = {
   mode: 'jit',
   purge: ['./pages/**/*.{js,ts,jsx,tsx}', './components/**/*.{js,ts,jsx,tsx}'],
