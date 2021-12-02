@@ -9,6 +9,10 @@ export interface User {
   updated: Date;
 }
 
+export type LoginDTO = {
+  access_token: string;
+};
+
 type PasswordDTO = {
   password: string;
   oldPassword: string;

@@ -4,6 +4,12 @@ import NavBar from '@components/navbar';
 import Footer from '@components/footer';
 import Link from 'next/link';
 import HttpClient from '@data/httpclient';
+import {
+  LoginDTO,
+  User,
+  UserPostDTO,
+  validateUserPostBody,
+} from '@data/user.dto';
 
 /*
  * styles
@@ -44,7 +50,25 @@ export default function Login(props: LoginProps) {
               (password.current = e.currentTarget.value)
             }
           />
-          <button className="px-4 py-3 bg-orange-400 text-xl text-white rounded-lg my-5">
+          <button
+            onClick={() => {
+              const data: UserPostDTO = {
+                username: username.current,
+                password: password.current,
+              };
+              validateUserPostBody(data).then(
+                (validations: Record<string, string[]> | undefined) => {
+                  if (validations === undefined) {
+                    current
+                      .login(data)
+                      .then((_login: LoginDTO) => console.log(_login))
+                      .catch(console.error);
+                  }
+                },
+              );
+            }}
+            className="px-4 py-3 bg-orange-400 text-xl text-white rounded-lg my-5"
+          >
             Submit
           </button>
           <Link href="/register">

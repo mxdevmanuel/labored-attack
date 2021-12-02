@@ -4,7 +4,7 @@ import TopologyBackground from '@components/topologybackground';
 import NavBar from '@components/navbar';
 import Footer from '@components/footer';
 import HttpClient from '@data/httpclient';
-import { validateUserPostBody, UserPostDTO } from '@data/user.dto';
+import { validateUserPostBody, UserPostDTO, User } from '@data/user.dto';
 
 /*
  * styles
@@ -25,10 +25,9 @@ export default function Register() {
       <main className="flex flex-row justify-start px-10">
         <section className="w-full lg:w-1/3 flex flex-col place-content-center bg-sky-900 p-5 rounded-lg border-4 border-sky-700 my-10">
           <h1 className="text-orange-400 text-5xl text-center mb-5">Sign Up</h1>
-          <input type="email" placeholder="Username" className={loginInput} />
           <input
-            type="password"
-            placeholder="Password"
+            type="email"
+            placeholder="Username"
             className={loginInput}
             onInput={(e: FormEvent<HTMLInputElement>) =>
               (username.current = e.currentTarget.value)
@@ -36,11 +35,16 @@ export default function Register() {
           />
           <input
             type="password"
-            placeholder="Confirm password"
+            placeholder="Password"
             className={loginInput}
             onInput={(e: FormEvent<HTMLInputElement>) =>
               (password.current = e.currentTarget.value)
             }
+          />
+          <input
+            type="password"
+            placeholder="Confirm password"
+            className={loginInput}
           />
           <button
             onClick={() => {
@@ -51,8 +55,10 @@ export default function Register() {
               validateUserPostBody(data).then(
                 (validations: Record<string, string[]> | undefined) => {
                   if (validations === undefined) {
-                    current.register(data);
-                    current;
+                    current
+                      .register(data)
+                      .then((user: User) => console.log(user))
+                      .catch(console.error);
                   }
                 },
               );
