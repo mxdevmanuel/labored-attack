@@ -1,7 +1,16 @@
 import InvalidDataException from '@errors/invaliddata.exception';
 import { AxiosRequestConfig, AxiosResponse } from 'axios';
 import BaseHttpClient from './client.base';
-import { LoginDTO, User, UserPostDTO, validateUserPostBody } from './user.dto';
+import {
+  Profile,
+  ProfileDTO,
+  LoginDTO,
+  User,
+  UserPostDTO,
+  UserLoginDTO,
+  validateUserPostBody,
+  validateUserLoginBody,
+} from './user.dto';
 
 const baseUrl = 'http://localhost:3000';
 
@@ -16,8 +25,8 @@ export default class AuthHttpClient extends BaseHttpClient {
     super(baseUrl);
   }
 
-  async login(data: UserPostDTO): Promise<LoginDTO> {
-    const validation = await validateUserPostBody(data);
+  async login(data: UserLoginDTO): Promise<LoginDTO> {
+    const validation = await validateUserLoginBody(data);
     if (validation !== undefined) {
       throw new InvalidDataException('Invalid login data', validation);
     }
@@ -32,6 +41,11 @@ export default class AuthHttpClient extends BaseHttpClient {
     }
     const response = await this.instance.post<User>(this.urls.register, data);
     return response.data;
+  }
+
+  async profile(): Promise<Profile> {
+    const { data } = await this.instance.get<ProfileDTO>('/auth/profile');
+    return { username: data.username, id: data.userId };
   }
 
   _initializeRequestInterceptor() {

@@ -1,15 +1,13 @@
-import { useRef, FormEvent } from 'react';
+import { useRouter } from 'next/router';
+import { useEffect, useRef, FormEvent } from 'react';
+import { loginError } from '@components/alerts/auth.alerts';
 import TopologyBackground from '@components/topologybackground';
 import NavBar from '@components/navbar';
 import Footer from '@components/footer';
 import Link from 'next/link';
 import HttpClient from '@data/httpclient';
-import {
-  LoginDTO,
-  User,
-  UserPostDTO,
-  validateUserPostBody,
-} from '@data/user.dto';
+import { LoginDTO, UserLoginDTO, validateUserLoginBody } from '@data/user.dto';
+import routes from '@routes';
 
 /*
  * styles
@@ -17,15 +15,19 @@ import {
  * loginInput: classes for white bg input with blue border
  * */
 
-interface LoginProps {
-  foo?: string;
-}
-
 const loginInput =
   'placeholder-orange-400 text-orange-400 text-2xl border-4 rounded-lg border-sky-700 px-4 py-2 my-5';
 
-export default function Login(props: LoginProps) {
+export default function Login() {
   const { current } = useRef(new HttpClient());
+  const router = useRouter();
+  useEffect(() => {
+    // Go to home page if logged in
+    current
+      .profile()
+      .then(() => router.push(routes.home))
+      .catch(console.error);
+  }, []);
   const username = useRef('');
   const password = useRef('');
   return (
@@ -52,17 +54,19 @@ export default function Login(props: LoginProps) {
           />
           <button
             onClick={() => {
-              const data: UserPostDTO = {
+              const data: UserLoginDTO = {
                 username: username.current,
                 password: password.current,
               };
-              validateUserPostBody(data).then(
+              validateUserLoginBody(data).then(
                 (validations: Record<string, string[]> | undefined) => {
                   if (validations === undefined) {
                     current
                       .login(data)
-                      .then((_login: LoginDTO) => console.log(_login))
+                      .then((_login: LoginDTO) => router.push(routes.home))
                       .catch(console.error);
+                  } else {
+                    loginError({ validation: validations });
                   }
                 },
               );

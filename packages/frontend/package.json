@@ -13,14 +13,18 @@
     "cookie-parser": "^1.4.6",
     "dayjs": "^1.10.7",
     "highlight.js": "^11.3.1",
+    "lodash": "^4.17.21",
     "next": "latest",
     "react": "^17.0.2",
     "react-dom": "^17.0.2",
+    "sweetalert2": "^11.2.1",
+    "sweetalert2-react-content": "^4.2.0",
     "validate.js": "^0.13.1"
   },
   "devDependencies": {
     "@types/cookie-parser": "^1.4.2",
     "@types/highlightjs": "^9.12.2",
+    "@types/lodash": "^4.14.177",
     "@types/node": "^16.11.10",
     "@types/react": "^17.0.37",
     "autoprefixer": "^10.2.6",

@@ -1,10 +1,13 @@
-import { useRef, FormEvent } from 'react';
+import { useRef, useEffect, FormEvent } from 'react';
+import { useRouter } from 'next/router';
 import Link from 'next/link';
 import TopologyBackground from '@components/topologybackground';
+import { registerSuccess, registerError } from '@components/alerts/auth.alerts';
 import NavBar from '@components/navbar';
 import Footer from '@components/footer';
 import HttpClient from '@data/httpclient';
 import { validateUserPostBody, UserPostDTO, User } from '@data/user.dto';
+import routes from '@routes';
 
 /*
  * styles
@@ -16,9 +19,18 @@ const loginInput =
   'placeholder-orange-400 text-orange-400 text-2xl border-4 rounded-lg border-sky-700 px-4 py-2 my-5';
 
 export default function Register() {
+  const router = useRouter();
+  useEffect(() => {
+    // Go to home page if logged in
+    current
+      .profile()
+      .then(() => router.push(routes.home))
+      .catch(console.error);
+  }, []);
   const { current } = useRef(new HttpClient());
   const username = useRef('');
   const password = useRef('');
+  const confirmPassword = useRef('');
   return (
     <TopologyBackground className="h-screen font-publicsans">
       <NavBar showSignUpButton={false} />
@@ -45,20 +57,27 @@ export default function Register() {
             type="password"
             placeholder="Confirm password"
             className={loginInput}
+            onInput={(e: FormEvent<HTMLInputElement>) =>
+              (confirmPassword.current = e.currentTarget.value)
+            }
           />
           <button
             onClick={() => {
               const data: UserPostDTO = {
                 username: username.current,
                 password: password.current,
+                confirmPassword: confirmPassword.current,
               };
               validateUserPostBody(data).then(
                 (validations: Record<string, string[]> | undefined) => {
                   if (validations === undefined) {
                     current
                       .register(data)
-                      .then((user: User) => console.log(user))
+                      .then((user: User) => registerSuccess(user.username))
+                      .then(() => router.push(routes.login))
                       .catch(console.error);
+                  } else {
+                    registerError({ validation: validations });
                   }
                 },
               );
