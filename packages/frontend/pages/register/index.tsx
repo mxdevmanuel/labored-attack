@@ -23,7 +23,7 @@ export default function Register() {
     <TopologyBackground className="h-screen font-publicsans">
       <NavBar showSignUpButton={false} />
       <main className="flex flex-row justify-start px-10">
-        <section className="w-full lg:w-1/3 flex flex-col place-content-center bg-sky-900 p-5 rounded-lg border-4 border-sky-700 my-10">
+        <section className="w-full lg:w-1/3 2xl:w-1/4 flex flex-col place-content-center bg-sky-900 p-5 rounded-lg border-4 border-sky-700 my-10">
           <h1 className="text-orange-400 text-5xl text-center mb-5">Sign Up</h1>
           <input
             type="email"
