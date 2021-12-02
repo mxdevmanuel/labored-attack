@@ -18,6 +18,7 @@
     "paths": {
       "@components/*": ["components/*"],
       "@data/*": ["data/*"],
+      "@errors/*": ["errors/*"],
       "@styles/*": ["styles/*"]
     }
   },

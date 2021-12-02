@@ -15,7 +15,7 @@ export interface Snippet {
 // Post (create) body
 export type SnippetPostDTO = Pick<Snippet, 'title' | 'code' | 'language'>;
 
-export const SnippetPostConstraints: Record<string, any> = {
+const SnippetPostConstraints: Record<string, any> = {
   title: {
     length: {
       maximum: 50,

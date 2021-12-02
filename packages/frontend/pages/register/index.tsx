@@ -1,7 +1,10 @@
+import { useRef, FormEvent } from 'react';
 import Link from 'next/link';
 import TopologyBackground from '@components/topologybackground';
 import NavBar from '@components/navbar';
 import Footer from '@components/footer';
+import HttpClient from '@data/httpclient';
+import { validateUserPostBody, UserPostDTO } from '@data/user.dto';
 
 /*
  * styles
@@ -13,6 +16,9 @@ const loginInput =
   'placeholder-orange-400 text-orange-400 text-2xl border-4 rounded-lg border-sky-700 px-4 py-2 my-5';
 
 export default function Register() {
+  const { current } = useRef(new HttpClient());
+  const username = useRef('');
+  const password = useRef('');
   return (
     <TopologyBackground className="h-screen font-publicsans">
       <NavBar showSignUpButton={false} />
@@ -24,13 +30,35 @@ export default function Register() {
             type="password"
             placeholder="Password"
             className={loginInput}
+            onInput={(e: FormEvent<HTMLInputElement>) =>
+              (username.current = e.currentTarget.value)
+            }
           />
           <input
             type="password"
             placeholder="Confirm password"
             className={loginInput}
+            onInput={(e: FormEvent<HTMLInputElement>) =>
+              (password.current = e.currentTarget.value)
+            }
           />
-          <button className="px-4 py-3 bg-orange-400 text-xl text-white rounded-lg my-5">
+          <button
+            onClick={() => {
+              const data: UserPostDTO = {
+                username: username.current,
+                password: password.current,
+              };
+              validateUserPostBody(data).then(
+                (validations: Record<string, string[]> | undefined) => {
+                  if (validations === undefined) {
+                    current.register(data);
+                    current;
+                  }
+                },
+              );
+            }}
+            className="px-4 py-3 bg-orange-400 text-xl text-white rounded-lg my-5"
+          >
             Submit
           </button>
           <Link href="/login">

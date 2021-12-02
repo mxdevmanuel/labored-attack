@@ -16,6 +16,7 @@
     "husky": "^7.0.4"
   },
   "dependencies": {
-    "@yarnpkg/plugin-dlx": "^3.1.1"
+    "@yarnpkg/plugin-dlx": "^3.1.1",
+    "json-server": "^0.17.0"
   }
 }
