@@ -8,6 +8,7 @@
     "start": "next start"
   },
   "dependencies": {
+    "@headlessui/react": "^1.4.2",
     "axios": "^0.24.0",
     "clsx": "^1.1.1",
     "cookie-parser": "^1.4.6",

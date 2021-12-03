@@ -7,7 +7,7 @@ import {
   generateErrorAlert,
   generateSuccessAlert,
   validationToMsg,
-} from '@components/alerts/auth.alerts';
+} from '@components/alerts';
 import NavBar from '@components/navbar';
 import Footer from '@components/footer';
 import HttpClient from '@data/httpclient';

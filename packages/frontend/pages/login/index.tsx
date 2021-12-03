@@ -1,15 +1,14 @@
+import Link from 'next/link';
 import { useRouter } from 'next/router';
 import { useEffect, useRef, FormEvent } from 'react';
 import {
   useAlert,
   generateErrorAlert,
   validationToMsg,
-  AlertOptions,
-} from '@components/alerts/auth.alerts';
+} from '@components/alerts';
 import TopologyBackground from '@components/topologybackground';
 import NavBar from '@components/navbar';
 import Footer from '@components/footer';
-import Link from 'next/link';
 import HttpClient from '@data/httpclient';
 import { LoginDTO, UserLoginDTO, validateUserLoginBody } from '@data/user.dto';
 import routes from '@routing/routes';
