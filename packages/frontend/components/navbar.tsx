@@ -5,29 +5,31 @@ import { Profile } from '@data/user.dto';
 import Link from 'next/link';
 import clsx from 'clsx';
 
-/*
- * styles
- * link: classes right side links
- * linkButton: classes for an outline link as a button
- */
+// * link: classes right side links
 const link =
   'hover:text-white text-2xl px-4 py-2 mx-1 cursor-pointer selection-none';
+// * linkButton: classes for an outline link as a button
 const linkButton = 'border-2 border-indigo-200 hover:border-white rounded-lg';
 
 interface NavBarProps {
-  showSignUpButton?: boolean;
+  showAuthAction?: boolean;
+  user?: Profile;
 }
 
 const client = new HttpClient();
 
-export default function NavBar({ showSignUpButton = true }: NavBarProps) {
-  const [username, setUsername] = useState(null);
+export default function NavBar({ showAuthAction = true, user }: NavBarProps) {
+  const [username, setUsername] = useState(user?.username);
 
   useEffect(() => {
-    client
-      .profile()
-      .then((profile: Profile) => setUsername(profile.username))
-      .catch(console.error);
+    if (isNil(username) && showAuthAction) {
+      client
+        .profile()
+        .then((profile: Profile) => setUsername(profile.username))
+        .catch(() => {
+          console.log('Not Authenticated');
+        });
+    }
   }, []);
   const isAuthenticated = !isNil(username);
   return (
@@ -53,7 +55,7 @@ export default function NavBar({ showSignUpButton = true }: NavBarProps) {
       <Link href="/login">
         <span
           className={clsx(link, linkButton, 'text-indigo-200', {
-            hidden: !showSignUpButton || isAuthenticated,
+            hidden: !showAuthAction || isAuthenticated,
           })}
         >
           Sign Up

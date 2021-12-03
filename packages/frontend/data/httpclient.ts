@@ -1,5 +1,5 @@
 import InvalidDataException from '@errors/invaliddata.exception';
-import { AxiosRequestConfig, AxiosResponse } from 'axios';
+import { AxiosRequestConfig, AxiosResponse, AxiosError } from 'axios';
 import BaseHttpClient from './client.base';
 import {
   Profile,
@@ -14,7 +14,14 @@ import {
 
 const baseUrl = 'http://localhost:3000';
 
+enum HttpErrors {
+  UNAUTHORIZED = 401,
+  NOT_FOUND = 404,
+  CONFLICT = 409,
+}
+
 export default class AuthHttpClient extends BaseHttpClient {
+  static HttpErrors = HttpErrors;
   protected token: string = null;
   readonly urls: Record<string, string> = {
     login: '/auth/login',
@@ -65,6 +72,11 @@ export default class AuthHttpClient extends BaseHttpClient {
         }
         return response;
       },
+      this._errorHandler,
     );
+  }
+
+  protected _errorHandler(error: AxiosError) {
+    return Promise.reject(error);
   }
 }

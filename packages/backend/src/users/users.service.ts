@@ -12,7 +12,7 @@ export class UsersService {
   ) {}
 
   async findOne(username: string): Promise<User | undefined> {
-    return this.userRepository.findOne({ username });
+    return this.userRepository.findOneOrFail({ username });
   }
 
   async create(username: string, rawPassword: string): Promise<DisplayUser> {

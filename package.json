@@ -2,10 +2,10 @@
   "name": "labored-attack",
   "version": "0.0.1",
   "description": "ne(s/x)tjs demo project",
-  "workspaces": [
-    "packages/*"
-  ],
+  "workspaces": ["packages/*"],
   "scripts": {
+    "start:backend": "yarn workspace backend start:dev",
+    "start:frontend": "yarn workspace frontend dev",
     "postinstall": "husky install"
   },
   "repository": "https://github.com/mxdevmanuel/labored-attack.git",

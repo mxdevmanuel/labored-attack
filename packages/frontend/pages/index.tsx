@@ -1,17 +1,19 @@
+import Head from '@components/head';
 import NavBar from '@components/navbar';
+import Footer from '@components/footer';
 import { Fragment } from 'react';
-import Head from 'next/head';
 
 export default function Home() {
   return (
     <Fragment>
-      <Head>
-        <title>Create Next App</title>
-        <link rel="icon" href="/favicon.ico" />
-      </Head>
-      <NavBar />
-      <main className="bg-sky-900"></main>
-      <footer className=""></footer>
+      <Head title="Inicio" />
+      <div className="bg-sky-900 min-h-screen">
+        <NavBar />
+        <main>
+          <section></section>
+        </main>
+        <Footer />
+      </div>
     </Fragment>
   );
 }

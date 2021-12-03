@@ -15,7 +15,10 @@ import { JwtAuthGuard } from './jwt-auth.guard';
 import { DisplayUser } from './auth.types';
 import { UserPostDTO } from './auth.dto';
 import { UsersService } from '@users/users.service';
-import { QueryFailedFilter } from '@database/database.filter';
+import {
+  QueryFailedFilter,
+  EntityNotFoundFilter,
+} from '@database/database.filter';
 
 // IUGH
 import ms = require('ms');
@@ -29,6 +32,7 @@ export class AuthController {
   ) {}
 
   @UseGuards(LocalAuthGuard)
+  @UseFilters(EntityNotFoundFilter)
   @Post('login')
   async login(@Request() req: Req, @Response({ passthrough: true }) res: Res) {
     const data = await this.authService.login(req.user as DisplayUser);
