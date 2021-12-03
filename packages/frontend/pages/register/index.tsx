@@ -2,7 +2,12 @@ import { useRef, useEffect, FormEvent } from 'react';
 import { useRouter } from 'next/router';
 import Link from 'next/link';
 import TopologyBackground from '@components/topologybackground';
-import { registerSuccess, registerError } from '@components/alerts/auth.alerts';
+import {
+  useAlert,
+  generateErrorAlert,
+  generateSuccessAlert,
+  validationToMsg,
+} from '@components/alerts/auth.alerts';
 import NavBar from '@components/navbar';
 import Footer from '@components/footer';
 import HttpClient from '@data/httpclient';
@@ -27,12 +32,14 @@ export default function Register() {
       .then(() => router.push(routes.home))
       .catch(console.error);
   }, []);
+  const [alerts, addAlert] = useAlert();
   const { current } = useRef(new HttpClient());
   const username = useRef('');
   const password = useRef('');
   const confirmPassword = useRef('');
   return (
     <TopologyBackground className="h-screen font-publicsans">
+      {alerts}
       <NavBar showSignUpButton={false} />
       <main className="flex flex-row justify-start px-10">
         <section className="w-full lg:w-1/3 2xl:w-1/4 flex flex-col place-content-center bg-sky-900 p-5 rounded-lg border-4 border-sky-700 my-10">
@@ -73,11 +80,21 @@ export default function Register() {
                   if (validations === undefined) {
                     current
                       .register(data)
-                      .then((user: User) => registerSuccess(user.username))
+                      .then(
+                        (user: User) =>
+                          new Promise<void>((resolve) =>
+                            addAlert(
+                              generateSuccessAlert(
+                                `Successfully registered as ${user.username}`,
+                                resolve,
+                              ),
+                            ),
+                          ),
+                      )
                       .then(() => router.push(routes.login))
                       .catch(console.error);
                   } else {
-                    registerError({ validation: validations });
+                    addAlert(generateErrorAlert(validationToMsg(validations)));
                   }
                 },
               );

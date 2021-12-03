@@ -1,6 +1,11 @@
 import { useRouter } from 'next/router';
 import { useEffect, useRef, FormEvent } from 'react';
-import { loginError } from '@components/alerts/auth.alerts';
+import {
+  useAlert,
+  generateErrorAlert,
+  validationToMsg,
+  AlertOptions,
+} from '@components/alerts/auth.alerts';
 import TopologyBackground from '@components/topologybackground';
 import NavBar from '@components/navbar';
 import Footer from '@components/footer';
@@ -30,8 +35,10 @@ export default function Login() {
   }, []);
   const username = useRef('');
   const password = useRef('');
+  const [alerts, addAlert] = useAlert();
   return (
     <TopologyBackground className="h-screen font-publicsans">
+      {alerts}
       <NavBar showSignUpButton={false} />
       <main className="flex flex-row justify-end px-10">
         <section className="w-full lg:w-1/3 2xl:w-1/4 flex flex-col place-content-center bg-sky-900 p-5 rounded-lg border-4 border-sky-700 my-10">
@@ -66,7 +73,7 @@ export default function Login() {
                       .then((_login: LoginDTO) => router.push(routes.home))
                       .catch(console.error);
                   } else {
-                    loginError({ validation: validations });
+                    addAlert(generateErrorAlert(validationToMsg(validations)));
                   }
                 },
               );
