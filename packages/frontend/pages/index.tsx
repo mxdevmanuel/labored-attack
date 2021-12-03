@@ -1,5 +1,6 @@
 import Head from '@components/head';
 import NavBar from '@components/navbar';
+import Editor from '@components/editor';
 import Footer from '@components/footer';
 import { Fragment } from 'react';
 
@@ -10,7 +11,9 @@ export default function Home() {
       <div className="bg-sky-900 min-h-screen">
         <NavBar />
         <main>
-          <section></section>
+          <section>
+            <Editor></Editor>
+          </section>
         </main>
         <Footer />
       </div>
