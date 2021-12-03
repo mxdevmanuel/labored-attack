@@ -1,4 +1,3 @@
-import { Transition } from '@headlessui/react';
 import { useState } from 'react';
 import values from 'lodash/values';
 import clsx from 'clsx';
@@ -9,6 +8,7 @@ export interface AlertOptions {
   message: JSX.Element | string;
   buttonText?: string;
   buttonClasses?: string;
+  containerClasses?: string;
   onConfirm?: () => void;
 }
 
@@ -41,49 +41,44 @@ export function useAlert(): UseAlertReturnType {
 const alertFieldsStyle = 'mx-auto my-2 text-center';
 
 export function Alert({ options, remove }: AlertProps) {
-  const [visible, setVisible] = useState(true);
   const close = () => {
     if (options.onConfirm) {
       options.onConfirm();
     }
-    setVisible(false);
     remove();
   };
   return (
-    <Transition appear={true} show={visible}>
+    <div
+      className="absolute h-screen w-screen z-50"
+      onClick={close}
+      style={{ backgroundColor: 'rgba(46,76,109, 0.7)' }}
+    >
       <div
-        className="absolute h-screen w-screen z-50"
-        onClick={close}
-        style={{ backgroundColor: 'rgba(46,76,109, 0.7)' }}
+        className={clsx(
+          options.containerClasses ?? 'animate__animated animate__bounceIn',
+          ' rounded-lg mx-auto my-20 bg-white w-5/6 lg:w-1/3 p-6',
+        )}
       >
-        <Transition.Child
-          enter="transition-transform ease-linear duration-75"
-          enterFrom="scale-75"
-          enterTo="scale-100"
-        >
-          <div className="rounded-lg mx-auto translate-y-1/2 bg-white w-5/6 lg:w-1/3 p-6">
-            <div className="flex flex-col place-content-center">
-              <div className={alertFieldsStyle}>{options.icon}</div>
-              <div className={alertFieldsStyle}>{options.title}</div>
-              <div className={clsx(alertFieldsStyle, 'text-lg')}>
-                {options.message}
-              </div>
-              <div className={alertFieldsStyle}>
-                <button
-                  className={
-                    options.buttonClasses ??
-                    'px-5 py-2 bg-sky-700 text-white rounded-lg'
-                  }
-                  onClick={close}
-                >
-                  {options.buttonText ?? 'OK'}
-                </button>
-              </div>
-            </div>
+        <div className="flex flex-col place-content-center">
+          <div className={alertFieldsStyle}>{options.icon}</div>
+          <div className={alertFieldsStyle}>{options.title}</div>
+          <div className={clsx(alertFieldsStyle, 'text-lg')}>
+            {options.message}
           </div>
-        </Transition.Child>
+          <div className={alertFieldsStyle}>
+            <button
+              className={
+                options.buttonClasses ??
+                'px-5 py-2 bg-sky-700 text-white rounded-lg'
+              }
+              onClick={close}
+            >
+              {options.buttonText ?? 'OK'}
+            </button>
+          </div>
+        </div>
       </div>
-    </Transition>
+    </div>
   );
 }
 

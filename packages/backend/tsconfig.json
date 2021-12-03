@@ -13,6 +13,7 @@
     "paths": {
       "@acl/*": ["src/acl/*"],
       "@auth/*": ["src/auth/*"],
+      "@database/*": ["src/database/*"],
       "@entities/*": ["src/database/entities/*"],
       "@users/*": ["src/users/*"]
     },

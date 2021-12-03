@@ -6,6 +6,7 @@ import {
   Post,
   UseGuards,
   Body,
+  UseFilters,
 } from '@nestjs/common';
 import { Request as Req, Response as Res } from 'express';
 import { AuthService } from './auth.service';
@@ -14,6 +15,7 @@ import { JwtAuthGuard } from './jwt-auth.guard';
 import { DisplayUser } from './auth.types';
 import { UserPostDTO } from './auth.dto';
 import { UsersService } from '@users/users.service';
+import { QueryFailedFilter } from '@database/database.filter';
 
 // IUGH
 import ms = require('ms');
@@ -40,6 +42,7 @@ export class AuthController {
   }
 
   @Post('register')
+  @UseFilters(QueryFailedFilter)
   async registeUser(@Body() { username, password }: UserPostDTO) {
     return this.usersService.create(username, password);
   }
