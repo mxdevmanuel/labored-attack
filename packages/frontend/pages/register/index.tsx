@@ -7,7 +7,7 @@ import NavBar from '@components/navbar';
 import Footer from '@components/footer';
 import HttpClient from '@data/httpclient';
 import { validateUserPostBody, UserPostDTO, User } from '@data/user.dto';
-import routes from '@routes';
+import routes from '@routing/routes';
 
 /*
  * styles

@@ -19,7 +19,7 @@
       "@components/*": ["components/*"],
       "@data/*": ["data/*"],
       "@errors/*": ["errors/*"],
-      "@routes": ["routes/index.ts"],
+      "@routing/*": ["routing/*"],
       "@styles/*": ["styles/*"]
     }
   },

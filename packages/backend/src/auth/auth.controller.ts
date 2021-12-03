@@ -17,7 +17,7 @@ import { UsersService } from '@users/users.service';
 
 // IUGH
 import ms = require('ms');
-import { cookieConstants } from './constants';
+import { cookieConstants, jwtConstants } from './constants';
 
 @Controller('auth')
 export class AuthController {
@@ -31,7 +31,7 @@ export class AuthController {
   async login(@Request() req: Req, @Response({ passthrough: true }) res: Res) {
     const data = await this.authService.login(req.user as DisplayUser);
     res.cookie(cookieConstants.name, data.access_token, {
-      maxAge: ms('2m'),
+      maxAge: ms(jwtConstants.duration),
       httpOnly: true,
       signed: true,
       // secure: true, // TODO: set environment conditional

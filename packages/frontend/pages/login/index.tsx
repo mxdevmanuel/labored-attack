@@ -7,7 +7,7 @@ import Footer from '@components/footer';
 import Link from 'next/link';
 import HttpClient from '@data/httpclient';
 import { LoginDTO, UserLoginDTO, validateUserLoginBody } from '@data/user.dto';
-import routes from '@routes';
+import routes from '@routing/routes';
 
 /*
  * styles

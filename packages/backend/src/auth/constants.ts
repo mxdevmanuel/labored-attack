@@ -8,6 +8,7 @@ export enum Action {
 
 export const jwtConstants = {
   secret: 'secretKey',
+  duration: '24h',
 };
 
 export const cookieConstants = { name: 'auth', secret: 'doubleshot' };
