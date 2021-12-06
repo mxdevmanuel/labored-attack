@@ -2,6 +2,7 @@
 
 pre > code , pre > code * , #editor {
 	/* font-size: 15pt; */
+	tab-size: 2;
 	line-height: 20pt;
 	font-family: "Source Code Pro", monospace
 }
