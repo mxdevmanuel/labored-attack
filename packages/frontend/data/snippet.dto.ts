@@ -22,12 +22,12 @@ const SnippetPostConstraints: Record<string, any> = {
     },
   },
   code: {
-    prescence: {
+    presence: {
       allowEmpty: false,
     },
   },
   language: {
-    prescence: { allowEmpty: false },
+    presence: { allowEmpty: false },
     length: {
       maximum: 50,
     },
@@ -47,7 +47,7 @@ export type SnippetPutDTO = Pick<Snippet, 'id'> & Partial<SnippetPostDTO>;
 
 const SnippetPutConstraints: Record<string, any> = {
   id: {
-    prescence: true,
+    presence: true,
   },
   title: {
     length: {

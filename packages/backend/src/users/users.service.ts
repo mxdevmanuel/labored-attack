@@ -11,7 +11,8 @@ export class UsersService {
     @InjectRepository(User) private userRepository: Repository<User>,
   ) {}
 
-  async findOne(username: string): Promise<User | undefined> {
+  async findOne(usernamer: string): Promise<User | undefined> {
+    const username = usernamer.toLowerCase();
     return this.userRepository.findOneOrFail({ username });
   }
 

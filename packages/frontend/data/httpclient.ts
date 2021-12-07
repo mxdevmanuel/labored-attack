@@ -11,6 +11,13 @@ import {
   validateUserPostBody,
   validateUserLoginBody,
 } from './user.dto';
+import {
+  Snippet,
+  SnippetPostDTO,
+  SnippetPutDTO,
+  validateSnippetPostBody,
+  validateSnippetPutBody,
+} from './snippet.dto';
 
 const baseUrl = 'http://localhost:3000';
 
@@ -26,6 +33,7 @@ export default class AuthHttpClient extends BaseHttpClient {
   readonly urls: Record<string, string> = {
     login: '/auth/login',
     register: '/auth/register',
+    createSnippet: '/snippets',
   };
 
   constructor() {
@@ -53,6 +61,18 @@ export default class AuthHttpClient extends BaseHttpClient {
   async profile(): Promise<Profile> {
     const { data } = await this.instance.get<ProfileDTO>('/auth/profile');
     return { username: data.username, id: data.userId };
+  }
+
+  async createSnippet(data: SnippetPostDTO): Promise<Snippet> {
+    const validation = await validateSnippetPostBody(data);
+    if (validation !== undefined) {
+      throw new InvalidDataException('Invalid create user data', validation);
+    }
+    const response = await this.instance.post<Snippet>(
+      this.urls.createSnippet,
+      data,
+    );
+    return response.data;
   }
 
   _initializeRequestInterceptor() {
