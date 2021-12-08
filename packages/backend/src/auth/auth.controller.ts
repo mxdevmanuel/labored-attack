@@ -7,6 +7,8 @@ import {
   UseGuards,
   Body,
   UseFilters,
+  HttpStatus,
+  HttpCode,
 } from '@nestjs/common';
 import { Request as Req, Response as Res } from 'express';
 import { AuthService } from './auth.service';
@@ -43,6 +45,13 @@ export class AuthController {
       // secure: true, // TODO: set environment conditional
     });
     return data;
+  }
+
+  @Get('logout')
+  @HttpCode(HttpStatus.NO_CONTENT)
+  async logout(@Response({ passthrough: true }) res: Res) {
+    res.clearCookie('auth');
+    return '';
   }
 
   @Post('register')

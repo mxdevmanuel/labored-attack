@@ -21,17 +21,19 @@ import {
 
 const baseUrl = 'http://localhost:3000';
 
-enum HttpErrors {
+enum HttpStatus {
+  NO_CONTENT = 204,
   UNAUTHORIZED = 401,
   NOT_FOUND = 404,
   CONFLICT = 409,
 }
 
 export default class AuthHttpClient extends BaseHttpClient {
-  static HttpErrors = HttpErrors;
+  static HttpErrors = HttpStatus;
   protected token: string = null;
   readonly urls: Record<string, string> = {
     login: '/auth/login',
+    logout: '/auth/logout',
     register: '/auth/register',
     createSnippet: '/snippets',
   };
@@ -47,6 +49,11 @@ export default class AuthHttpClient extends BaseHttpClient {
     }
     const response = await this.instance.post<LoginDTO>(this.urls.login, data);
     return response.data;
+  }
+
+  async logout(): Promise<boolean> {
+    const response = await this.instance.get(this.urls.logout);
+    return response.status === HttpStatus.NO_CONTENT;
   }
 
   async register(data: UserPostDTO): Promise<User> {

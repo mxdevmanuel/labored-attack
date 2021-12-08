@@ -1,4 +1,5 @@
 import isNil from 'lodash/isNil';
+import { useRouter } from 'next/router';
 import Head from '@components/head';
 import NavBar from '@components/navbar';
 import Editor from '@components/editor';
@@ -15,11 +16,26 @@ import {
   generateSuccessAlert,
   validationToMsg,
 } from '@components/alerts';
-import { Fragment, useRef } from 'react';
+import { Fragment, useRef, useEffect, useState } from 'react';
+import { AxiosError } from 'axios';
+import routes from '@routing/routes';
 
+type ValidationError = { name: string; errors: Record<string, string[]> };
 export default function Home() {
+  const router = useRouter();
   const { current: client } = useRef(new HttpClient());
   const [alerts, addAlert] = useAlert();
+  const [snippet, setSnippet] = useState(null);
+  useEffect(() => {
+    console.log('b', router.query);
+
+    if (router.query.back) {
+      const body: string = sessionStorage.getItem('body');
+      if (!isNil(body)) {
+        setSnippet(JSON.parse(body));
+      }
+    }
+  }, []);
   return (
     <Fragment>
       <Head title="Inicio" />
@@ -30,13 +46,18 @@ export default function Home() {
           <section>
             <Editor
               title="Create new snippet"
-              onSave={(body: SnippetPostDTO) => {
+              snippet={snippet}
+              recover={!isNil(snippet)}
+              onSave={(body: SnippetPostDTO) =>
                 validateSnippetPostBody(body)
                   .then((errors: Record<string, string[]>) => {
                     if (isNil(errors)) {
                       return client.createSnippet(body);
                     } else {
-                      return Promise.reject(errors);
+                      return Promise.reject({
+                        name: 'ValidationError',
+                        errors,
+                      });
                     }
                   })
                   .then((snippet: Snippet) => {
@@ -48,11 +69,27 @@ export default function Home() {
                       ),
                     );
                   })
-                  .catch((errors: Record<string, string[]>) => {
-                    console.error(errors);
-                    addAlert(generateErrorAlert(validationToMsg(errors)));
-                  });
-              }}
+                  .catch((error: AxiosError | ValidationError) => {
+                    if (error.name === 'ValidationError') {
+                      addAlert(
+                        generateErrorAlert(
+                          validationToMsg((error as ValidationError).errors),
+                        ),
+                      );
+                    }
+                    if (
+                      error.name === 'Error' &&
+                      (error as AxiosError).response.status ===
+                        HttpClient.HttpErrors.UNAUTHORIZED
+                    ) {
+                      sessionStorage.setItem('body', JSON.stringify(body));
+                      router.push({
+                        pathname: routes.login,
+                        query: { back: true },
+                      });
+                    }
+                  })
+              }
             ></Editor>
           </section>
         </main>

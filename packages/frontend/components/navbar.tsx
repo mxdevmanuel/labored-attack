@@ -1,9 +1,12 @@
+import { useRouter } from 'next/router';
 import { useState, useEffect } from 'react';
 import isNil from 'lodash/isNil';
 import HttpClient from '@data/httpclient';
+import UserMenu from '@components/usermenu';
 import { Profile } from '@data/user.dto';
 import Link from 'next/link';
 import clsx from 'clsx';
+import routes from '@routing/routes';
 
 // * link: classes right side links
 const link =
@@ -20,6 +23,7 @@ const client = new HttpClient();
 
 export default function NavBar({ showAuthAction = true, user }: NavBarProps) {
   const [username, setUsername] = useState(user?.username);
+  const router = useRouter();
 
   useEffect(() => {
     if (isNil(username) && showAuthAction) {
@@ -41,17 +45,26 @@ export default function NavBar({ showAuthAction = true, user }: NavBarProps) {
           </span>
         </Link>
       </div>
-      <span className={clsx(link, 'font-bold text-indigo-200')}>New</span>
-      <span className={clsx(link, 'text-indigo-200')}>Explore</span>
-      <Link href="/home">
-        <span
-          className={clsx(link, 'text-orange-400', {
-            hidden: !isAuthenticated,
-          })}
-        >
-          {username}
-        </span>
+      <Link href={routes.root}>
+        <span className={clsx(link, 'font-bold text-indigo-200')}>New</span>
       </Link>
+      <span className={clsx(link, 'text-indigo-200')}>Explore</span>
+      <div
+        className={clsx({
+          hidden: !isAuthenticated,
+        })}
+      >
+        <UserMenu
+          caption={username}
+          logoutHandler={() =>
+            client.logout().then((success: boolean) => {
+              if (success) {
+                router.reload();
+              }
+            })
+          }
+        />
+      </div>
       <Link href="/login">
         <span
           className={clsx(link, linkButton, 'text-indigo-200', {

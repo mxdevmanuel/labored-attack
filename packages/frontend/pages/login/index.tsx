@@ -27,7 +27,7 @@ export default function Login() {
     // Go to home page if logged in
     current
       .profile()
-      .then(() => router.push(routes.home))
+      .then(() => router.push(routes.root))
       .catch(console.error);
   }, []);
   const username = useRef('');
@@ -71,7 +71,12 @@ export default function Login() {
                     if (validations === undefined) {
                       current
                         .login(data)
-                        .then((_login: LoginDTO) => router.push(routes.home))
+                        .then((_login: LoginDTO) =>
+                          router.push({
+                            pathname: routes.root,
+                            query: router.query,
+                          }),
+                        )
                         .catch((error: AxiosError) => {
                           const msg = httpErrorExtractor(error);
                           addAlert(generateErrorAlert(msg));
