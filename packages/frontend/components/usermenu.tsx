@@ -19,6 +19,9 @@ export default function UserMenu({ caption, logoutHandler }: UserMenuProps) {
         <Link href={routes.mine}>
           <a className={menuItem}>My snippets</a>
         </Link>
+        <Link href={routes.account}>
+          <a className={menuItem}>My account</a>
+        </Link>
         <hr className="my-2 border-orange-400" />
         <a href="#" onClick={logoutHandler} className={menuItem}>
           Logout

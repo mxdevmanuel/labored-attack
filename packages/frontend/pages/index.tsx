@@ -21,14 +21,13 @@ import { AxiosError } from 'axios';
 import routes from '@routing/routes';
 
 type ValidationError = { name: string; errors: Record<string, string[]> };
+
 export default function Home() {
   const router = useRouter();
   const { current: client } = useRef(new HttpClient());
   const [alerts, addAlert] = useAlert();
   const [snippet, setSnippet] = useState(null);
   useEffect(() => {
-    console.log('b', router.query);
-
     if (router.query.back) {
       const body: string = sessionStorage.getItem('body');
       if (!isNil(body)) {
@@ -66,6 +65,12 @@ export default function Home() {
                         `Snippet${
                           snippet.title ? ' ' + snippet.title : ' '
                         } created`,
+                        () => {
+                          router.push({
+                            pathname: routes.snippet,
+                            query: { id: snippet.id },
+                          });
+                        },
                       ),
                     );
                   })

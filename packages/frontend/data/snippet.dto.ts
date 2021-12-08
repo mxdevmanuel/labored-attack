@@ -1,3 +1,5 @@
+import isEmpty from 'lodash/isEmpty';
+import isNil from 'lodash/isNil';
 import { validate } from 'validate.js';
 import { languages } from './constants';
 import { User } from './user.dto';
@@ -11,6 +13,15 @@ export interface Snippet {
   created: Date;
   updated: Date;
 }
+
+// Get by id
+export const validateSnippetId = async (
+  value: string,
+): Promise<{ id: string[] } | undefined> => {
+  if (isNil(value) || isEmpty(value)) {
+    return { id: ['Missing ID'] };
+  }
+};
 
 // Post (create) body
 export type SnippetPostDTO = Pick<Snippet, 'title' | 'code' | 'language'>;

@@ -17,11 +17,13 @@ import {
   SnippetPutDTO,
   validateSnippetPostBody,
   validateSnippetPutBody,
+  validateSnippetId,
 } from './snippet.dto';
 
 const baseUrl = 'http://localhost:3000';
 
 enum HttpStatus {
+  SUCCESS = 200,
   NO_CONTENT = 204,
   UNAUTHORIZED = 401,
   NOT_FOUND = 404,
@@ -32,10 +34,13 @@ export default class AuthHttpClient extends BaseHttpClient {
   static HttpErrors = HttpStatus;
   protected token: string = null;
   readonly urls: Record<string, string> = {
+    createSnippet: '/snippets',
+    deleteSnippet: '/snippets',
+    getSnippet: '/snippets',
     login: '/auth/login',
     logout: '/auth/logout',
     register: '/auth/register',
-    createSnippet: '/snippets',
+    updateSnippet: '/snippets',
   };
 
   constructor() {
@@ -80,6 +85,45 @@ export default class AuthHttpClient extends BaseHttpClient {
       data,
     );
     return response.data;
+  }
+
+  async getSnippet(snippetId: string): Promise<Snippet> {
+    const validation: { id: string[] } | undefined = await validateSnippetId(
+      snippetId,
+    );
+    if (validation) {
+      throw validation;
+    }
+    const response = await this.instance.get<Snippet>(
+      `${this.urls.getSnippet}/${snippetId}`,
+    );
+    return response.data;
+  }
+
+  async updateSnippet(data: SnippetPutDTO): Promise<Snippet> {
+    const validation = await validateSnippetPutBody(data);
+    if (validation !== undefined) {
+      throw new InvalidDataException('Invalid create user data', validation);
+    }
+    const { id, ...rest } = data;
+    const response = await this.instance.put<Snippet>(
+      `${this.urls.getSnippet}/${id}`,
+      rest,
+    );
+    return response.data;
+  }
+
+  async deleteSnippet(snippetId: string): Promise<boolean> {
+    const validation: { id: string[] } | undefined = await validateSnippetId(
+      snippetId,
+    );
+    if (validation) {
+      throw validation;
+    }
+    const response = await this.instance.delete<string>(
+      `${this.urls.deleteSnippet}/${snippetId}`,
+    );
+    return response.status === HttpStatus.SUCCESS;
   }
 
   _initializeRequestInterceptor() {

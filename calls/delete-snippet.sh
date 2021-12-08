@@ -1,5 +1,10 @@
-curl -sS http://localhost:3000/snippets/5af8273c-80f3-49af-baa1-9c0e3aaf785d \
-	-H "Content-Type:application/json" \
-	-X DELETE
+response=$(sh $(dirname ${0})/post-login.sh)
 
+token=$(echo $response | jq '.access_token' | tr -d '"')
+
+curl -sS http://localhost:3000/snippets/b9b2e3cb-a812-40d0-8931-c44e6a1ab198 \
+	-H "Accept:application/json" \
+	-H "Content-Type:application/json" \
+	-H "Authorization: Bearer $token" \
+	-X DELETE
 
