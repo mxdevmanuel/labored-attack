@@ -16,7 +16,10 @@ export class SnippetsService {
   }
 
   async findById(id: string): Promise<Snippet> {
-    return this.snippetRepository.findOne({ id }, { relations: ['owner'] });
+    return this.snippetRepository.findOneOrFail(
+      { id },
+      { relations: ['owner'] },
+    );
   }
 
   async create(

@@ -36,6 +36,7 @@ export default class AuthHttpClient extends BaseHttpClient {
   readonly urls: Record<string, string> = {
     createSnippet: '/snippets',
     deleteSnippet: '/snippets',
+    getSnippets: '/snippets',
     getSnippet: '/snippets',
     login: '/auth/login',
     logout: '/auth/logout',
@@ -97,6 +98,10 @@ export default class AuthHttpClient extends BaseHttpClient {
     const response = await this.instance.get<Snippet>(
       `${this.urls.getSnippet}/${snippetId}`,
     );
+    return response.data;
+  }
+  async listSnippets(): Promise<Snippet[]> {
+    const response = await this.instance.get<Snippet[]>(this.urls.getSnippets);
     return response.data;
   }
 

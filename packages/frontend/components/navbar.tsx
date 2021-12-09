@@ -1,5 +1,5 @@
 import { useRouter } from 'next/router';
-import { useState, useEffect } from 'react';
+import { useState, useEffect, RefObject } from 'react';
 import isNil from 'lodash/isNil';
 import HttpClient from '@data/httpclient';
 import UserMenu from '@components/usermenu';
@@ -17,11 +17,16 @@ const linkButton = 'border-2 border-indigo-200 hover:border-white rounded-lg';
 interface NavBarProps {
   showAuthAction?: boolean;
   user?: Profile;
+  innerRef?: RefObject<HTMLElement>;
 }
 
 const client = new HttpClient();
 
-export default function NavBar({ showAuthAction = true, user }: NavBarProps) {
+export default function NavBar({
+  showAuthAction = true,
+  user,
+  innerRef,
+}: NavBarProps) {
   const [username, setUsername] = useState(user?.username);
   const router = useRouter();
 
@@ -37,7 +42,10 @@ export default function NavBar({ showAuthAction = true, user }: NavBarProps) {
   }, []);
   const isAuthenticated = !isNil(username);
   return (
-    <nav className="flex flex-row w-full bg-sky-900 p-6 items-center justify-start font-publicsans">
+    <nav
+      ref={innerRef}
+      className="flex flex-row w-full bg-sky-900 p-6 items-center justify-start font-publicsans"
+    >
       <div className="flex-grow ">
         <Link href="/">
           <span className="text-orange-400 text-5xl cursor-pointer">
@@ -48,7 +56,9 @@ export default function NavBar({ showAuthAction = true, user }: NavBarProps) {
       <Link href={routes.root}>
         <span className={clsx(link, 'font-bold text-indigo-200')}>New</span>
       </Link>
-      <span className={clsx(link, 'text-indigo-200')}>Explore</span>
+      <Link href={routes.snippets}>
+        <span className={clsx(link, 'text-indigo-200')}>Explore</span>
+      </Link>
       <div
         className={clsx({
           hidden: !isAuthenticated,

@@ -3,6 +3,7 @@ import InfoIcon from '@components/icons/info';
 import WarningIcon from '@components/icons/warning';
 import ErrorIcon from '@components/icons/error';
 import SuccessIcon from '@components/icons/success';
+import { openStdin } from 'process';
 
 export const generateErrorAlert = (
   message: JSX.Element | string,
@@ -18,22 +19,34 @@ export const generateErrorAlert = (
 export const generateInfoAlert = (
   title: string,
   message: JSX.Element | string,
-  onConfirm?: () => void,
+  options?: {
+    onConfirm?: () => void;
+    onCancel?: () => void;
+  },
 ): AlertOptions => ({
   icon: <InfoIcon className="w-16 h-16 text-red-500" />,
   message,
-  onConfirm,
+  onConfirm: options.onConfirm,
+  onCancel: options.onCancel,
   title: <span className="text-xl text-sky-600 text-bold">{title}</span>,
 });
 
 export const generateWarningAlert = (
   message: JSX.Element | string,
-  onConfirm?: () => void,
+  options?: {
+    onConfirm?: () => void;
+    onCancel?: () => void;
+    confirmText?: string;
+    confirmClasses?: string;
+  },
 ): AlertOptions => ({
   icon: <WarningIcon className="w-16 h-16 text-yellow-500" />,
   message,
-  onConfirm,
+  onConfirm: options.onConfirm,
+  onCancel: options.onCancel,
   title: <span className="text-xl text-orange-800 text-bold">Warning</span>,
+  buttonText: options.confirmText,
+  buttonClasses: options.confirmClasses,
 });
 
 export const generateSuccessAlert = (

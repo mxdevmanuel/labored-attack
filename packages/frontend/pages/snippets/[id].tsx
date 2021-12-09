@@ -1,19 +1,23 @@
-import { GetServerSidePropsResult, GetServerSidePropsContext } from 'next';
-import { Snippet } from '@data/snippet.dto';
-import { Profile } from '@data/user.dto';
-import HttpClient from '@data/httpclient';
+import {
+  useAlert,
+  generateWarningAlert,
+  generateSuccessAlert,
+} from '@components/alerts';
+import Footer from '@components/footer';
 import Head from '@components/head';
 import NavBar from '@components/navbar';
 import Viewer from '@components/viewer';
-import Footer from '@components/footer';
-import { Fragment } from 'react';
-import { useRef, useEffect, useState } from 'react';
-import isArray from 'lodash/isArray';
-import capitalize from 'lodash/capitalize';
-import clsx from 'clsx';
+import HttpClient from '@data/httpclient';
+import { Snippet } from '@data/snippet.dto';
+import { Profile } from '@data/user.dto';
 import routes from '@routing/routes';
+import clsx from 'clsx';
+import capitalize from 'lodash/capitalize';
+import isArray from 'lodash/isArray';
+import { GetServerSidePropsResult, GetServerSidePropsContext } from 'next';
 import Link from 'next/link';
 import { useRouter } from 'next/router';
+import { Fragment, useRef, useEffect, useState } from 'react';
 
 interface SnippetByIdProps {
   snippet: Snippet;
@@ -24,29 +28,42 @@ export async function getServerSideProps({
 }: GetServerSidePropsContext): Promise<
   GetServerSidePropsResult<SnippetByIdProps>
 > {
-  const client = new HttpClient();
+  try {
+    const client = new HttpClient();
 
-  let snippetId = params.id;
-  if (isArray(params.id)) {
-    snippetId = params.id[0];
+    let snippetId = params.id;
+    if (isArray(params.id)) {
+      snippetId = params.id[0];
+    }
+    const ret: SnippetByIdProps = {
+      snippet: await client.getSnippet(snippetId as string),
+    };
+    return { props: ret };
+  } catch (err: any) {
+    return { notFound: true };
   }
-  const ret: SnippetByIdProps = {
-    snippet: await client.getSnippet(snippetId as string),
-  };
-  return { props: ret };
 }
 
 export default function SnippetById({ snippet }: SnippetByIdProps) {
   const { current: client } = useRef(new HttpClient());
   const [profile, setProfile] = useState<Profile>(null);
   const router = useRouter();
+  const [id, setId] = useState<string>('');
+  const [alert, addAlert] = useAlert();
 
   useEffect(() => {
     client.profile().then(setProfile).catch(console.error);
+    if (isArray(router.query.id)) {
+      setId(router.query.id[0]);
+    } else {
+      setId(router.query.id as string);
+    }
   }, []);
+
   return (
     <Fragment>
       <Head title={snippet.title ?? 'Snippet'} />
+      {alert}
       <div className="bg-sky-900 min-h-screen">
         <NavBar user={profile} />
         <main className="font-publicsans">
@@ -87,6 +104,31 @@ export default function SnippetById({ snippet }: SnippetByIdProps) {
                   'text-xl text-red-500 hover:text-red-400 cursor-pointer mx-2',
                   { hidden: !profile },
                 )}
+                onClick={() => {
+                  addAlert(
+                    generateWarningAlert(
+                      'Are you sure you want to delete this snippet',
+                      {
+                        confirmText: 'Confirm',
+                        onCancel: () => {},
+                        onConfirm: () => {
+                          client
+                            .deleteSnippet(id)
+                            .then((success: true) => {
+                              if (success) {
+                                addAlert(
+                                  generateSuccessAlert(
+                                    'Snippet successfully deleted',
+                                  ),
+                                );
+                              }
+                            })
+                            .catch(console.error);
+                        },
+                      },
+                    ),
+                  );
+                }}
               >
                 Delete
               </a>

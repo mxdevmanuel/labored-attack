@@ -1,3 +1,5 @@
+import { JwtAuthGuard } from '@auth/jwt-auth.guard';
+import { CaslAbilityFactory } from '@acl/casl-ability.factory';
 import {
   Body,
   Controller,
@@ -9,16 +11,16 @@ import {
   Request,
   Put,
   UseGuards,
+  UseFilters,
   UnauthorizedException,
 } from '@nestjs/common';
-import { Request as Req } from 'express';
-import { JwtAuthGuard } from '@auth/jwt-auth.guard';
-import { SnippetsService } from './snippets.service';
-import { CaslAbilityFactory } from '@acl/casl-ability.factory';
 import { SnippetPostBodyDTO, SnippetPutBodyDTO } from './snippet-body.dto';
+import { SnippetsService } from './snippets.service';
 import { ValidatedTokenUser } from '@auth/auth.types';
 import { Action } from '@auth/constants';
+import { EntityNotFoundFilter } from '@database/database.filter';
 import { Snippet } from '@entities/snippet.entity';
+import { Request as Req } from 'express';
 
 @Controller('snippets')
 export class SnippetsController {
@@ -34,6 +36,7 @@ export class SnippetsController {
     return this.snippetService.getAll();
   }
 
+  @UseFilters(EntityNotFoundFilter)
   @Get(':snippetId')
   async getSnippetById(@Param('snippetId') id: string) {
     return this.snippetService.findById(id);
@@ -55,6 +58,7 @@ export class SnippetsController {
     }
   }
 
+  @UseFilters(EntityNotFoundFilter)
   @UseGuards(JwtAuthGuard)
   @Put(':snippetId')
   async updateSnippet(
@@ -78,6 +82,7 @@ export class SnippetsController {
     }
   }
 
+  @UseFilters(EntityNotFoundFilter)
   @UseGuards(JwtAuthGuard)
   @Delete(':snippetId')
   async deleteSnippet(@Param('snippetId') id: string, @Request() request: Req) {

@@ -10,6 +10,7 @@ export interface AlertOptions {
   buttonClasses?: string;
   containerClasses?: string;
   onConfirm?: () => void;
+  onCancel?: () => void;
 }
 
 interface AlertProps {
@@ -41,16 +42,17 @@ export function useAlert(): UseAlertReturnType {
 const alertFieldsStyle = 'mx-auto my-2 text-center';
 
 export function Alert({ options, remove }: AlertProps) {
-  const close = () => {
-    if (options.onConfirm) {
-      options.onConfirm();
-    }
-    remove();
-  };
   return (
     <div
       className="absolute h-screen w-screen z-50"
-      onClick={close}
+      onClick={() => {
+        if (options.onCancel) {
+          options.onCancel();
+        } else if (options.onConfirm) {
+          options.onConfirm();
+        }
+        remove();
+      }}
       style={{ backgroundColor: 'rgba(46,76,109, 0.7)' }}
     >
       <div
@@ -71,9 +73,26 @@ export function Alert({ options, remove }: AlertProps) {
                 options.buttonClasses ??
                 'px-5 py-2 bg-sky-700 text-white rounded-lg'
               }
-              onClick={close}
+              onClick={() => {
+                if (options.onConfirm) options.onConfirm();
+                remove();
+              }}
             >
               {options.buttonText ?? 'OK'}
+            </button>
+            <button
+              className={clsx(
+                'mx-2 px-5 py-2 bg-red-700 text-white rounded-lg',
+                {
+                  hidden: !options.onCancel,
+                },
+              )}
+              onClick={() => {
+                if (options.onCancel) options.onCancel();
+                remove();
+              }}
+            >
+              Cancel
             </button>
           </div>
         </div>
