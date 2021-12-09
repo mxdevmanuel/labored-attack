@@ -1,3 +1,4 @@
+import FloatingButton from '@components/floatingbutton';
 import { Snippet } from '@data/snippet.dto';
 import Head from '@components/head';
 import Navbar from '@components/navbar';
@@ -43,24 +44,27 @@ export default function Snippets(props: SnippetsProps) {
 
   useEffect(() => {
     const observer = topObserver.current;
-    if (topEl) {
+    if (topEl.current) {
       observer.observe(topEl.current);
     }
     return () => {
-      if (topEl) {
-        observer.unobserve(topEl.current);
-      }
+      observer.disconnect();
     };
   }, [topEl]);
 
   return (
     <>
       <Head title="snippets" />
-      <div className="max-h-screen overflow-scroll bg-sky-900">
+      <div className="h-screen overflow-scroll bg-sky-900 pb-5 -mb-5">
         <Navbar innerRef={topEl} />
         <div className="flex flex-row">
           <List className="w-3/4" snippets={props.snippets}></List>
         </div>
+        <FloatingButton
+          className="absolute right-10 bottom-20"
+          visible={!atTop}
+          onClick={() => {}}
+        ></FloatingButton>
         <Footer />
       </div>
     </>
