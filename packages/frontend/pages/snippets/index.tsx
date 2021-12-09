@@ -1,3 +1,4 @@
+import UpIcon from '@components/icons/up';
 import FloatingButton from '@components/floatingbutton';
 import { Snippet } from '@data/snippet.dto';
 import Head from '@components/head';
@@ -27,8 +28,10 @@ export async function getServerSideProps({
 export default function Snippets(props: SnippetsProps) {
   const [atTop, setAtTop] = useState<boolean>(true);
 
+  const scrollContainer = useRef<HTMLDivElement>(null);
   const topEl = useRef<HTMLElement>(null);
   const topObserver = useRef<IntersectionObserver>(null);
+
   useEffect(() => {
     const observer = new IntersectionObserver(
       (entries: IntersectionObserverEntry[]) => {
@@ -55,7 +58,10 @@ export default function Snippets(props: SnippetsProps) {
   return (
     <>
       <Head title="snippets" />
-      <div className="h-screen overflow-scroll bg-sky-900 pb-5 -mb-5">
+      <div
+        ref={scrollContainer}
+        className="h-screen overflow-scroll bg-sky-900 pb-5 -mb-5"
+      >
         <Navbar innerRef={topEl} />
         <div className="flex flex-row">
           <List className="w-3/4" snippets={props.snippets}></List>
@@ -63,8 +69,12 @@ export default function Snippets(props: SnippetsProps) {
         <FloatingButton
           className="absolute right-10 bottom-20"
           visible={!atTop}
-          onClick={() => {}}
-        ></FloatingButton>
+          onClick={() => {
+            scrollContainer.current.scrollTo({ top: 0, behavior: 'smooth' });
+          }}
+        >
+          <UpIcon className="h-8 w-8 m-auto text-white" />
+        </FloatingButton>
         <Footer />
       </div>
     </>

@@ -2,7 +2,7 @@ import { Fragment } from 'react';
 import capitalize from 'lodash/capitalize';
 import Head from '@components/head';
 import { AxiosError } from 'axios';
-import { useRef, useEffect, FormEvent } from 'react';
+import { useRef, useEffect, FormEvent, KeyboardEvent } from 'react';
 import { useRouter } from 'next/router';
 import Link from 'next/link';
 import TopologyBackground from '@components/topologybackground';
@@ -24,6 +24,19 @@ const loginInput =
 
 export default function Register() {
   const router = useRouter();
+  const [alerts, addAlert] = useAlert();
+
+  const { current } = useRef(new HttpClient());
+  const username = useRef('');
+  const password = useRef('');
+  const confirmPassword = useRef('');
+  const submitButton = useRef<HTMLButtonElement>(null);
+
+  const onEnter = (e: KeyboardEvent<HTMLInputElement>) => {
+    if (e.key === 'Enter') {
+      submitButton.current.click();
+    }
+  };
   useEffect(() => {
     // Go to home page if logged in
     current
@@ -31,11 +44,6 @@ export default function Register() {
       .then(() => router.push(routes.home))
       .catch(console.error);
   }, []);
-  const [alerts, addAlert] = useAlert();
-  const { current } = useRef(new HttpClient());
-  const username = useRef('');
-  const password = useRef('');
-  const confirmPassword = useRef('');
   return (
     <Fragment>
       <Head title="Register" />
@@ -54,6 +62,7 @@ export default function Register() {
               onInput={(e: FormEvent<HTMLInputElement>) =>
                 (username.current = e.currentTarget.value)
               }
+              onKeyPress={onEnter}
             />
             <input
               type="password"
@@ -62,6 +71,7 @@ export default function Register() {
               onInput={(e: FormEvent<HTMLInputElement>) =>
                 (password.current = e.currentTarget.value)
               }
+              onKeyPress={onEnter}
             />
             <input
               type="password"
@@ -70,8 +80,10 @@ export default function Register() {
               onInput={(e: FormEvent<HTMLInputElement>) =>
                 (confirmPassword.current = e.currentTarget.value)
               }
+              onKeyPress={onEnter}
             />
             <button
+              ref={submitButton}
               onClick={() => {
                 const data: UserPostDTO = {
                   username: username.current,

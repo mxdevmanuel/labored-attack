@@ -3,6 +3,7 @@ import { InjectRepository } from '@nestjs/typeorm';
 import { Repository } from 'typeorm';
 import { Snippet } from '@entities/snippet.entity';
 import { User } from '@entities/user.entity';
+import { Pagination } from '@database/database.dto';
 
 @Injectable()
 export class SnippetsService {
@@ -11,8 +12,8 @@ export class SnippetsService {
     @InjectRepository(User) private userRepository: Repository<User>,
   ) {}
 
-  async getAll(): Promise<Snippet[]> {
-    return this.snippetRepository.find();
+  async getAll(options?: Pagination): Promise<Snippet[]> {
+    return this.snippetRepository.find({ ...options });
   }
 
   async findById(id: string): Promise<Snippet> {

@@ -1,20 +1,19 @@
-import Head from '@components/head';
-import { Fragment } from 'react';
-import Link from 'next/link';
-import { useRouter } from 'next/router';
-import { useEffect, useRef, FormEvent } from 'react';
 import {
   useAlert,
   generateErrorAlert,
   validationToMsg,
 } from '@components/alerts';
-import TopologyBackground from '@components/topologybackground';
-import NavBar from '@components/navbar';
 import Footer from '@components/footer';
+import Head from '@components/head';
+import NavBar from '@components/navbar';
+import TopologyBackground from '@components/topologybackground';
 import HttpClient from '@data/httpclient';
 import { LoginDTO, UserLoginDTO, validateUserLoginBody } from '@data/user.dto';
 import routes from '@routing/routes';
 import { AxiosError } from 'axios';
+import Link from 'next/link';
+import { useRouter } from 'next/router';
+import { Fragment, useEffect, useRef, FormEvent, KeyboardEvent } from 'react';
 
 // loginInput: classes for white bg input with blue border
 const loginInput =
@@ -32,6 +31,12 @@ export default function Login() {
   }, []);
   const username = useRef('');
   const password = useRef('');
+  const submitButton = useRef<HTMLButtonElement>(null);
+  const onEnter = (e: KeyboardEvent<HTMLInputElement>) => {
+    if (e.key === 'Enter') {
+      submitButton.current.click();
+    }
+  };
   const [alerts, addAlert] = useAlert();
   return (
     <Fragment>
@@ -51,6 +56,7 @@ export default function Login() {
               onInput={(e: FormEvent<HTMLInputElement>) =>
                 (username.current = e.currentTarget.value)
               }
+              onKeyPress={onEnter}
             />
             <input
               type="password"
@@ -59,8 +65,10 @@ export default function Login() {
               onInput={(e: FormEvent<HTMLInputElement>) =>
                 (password.current = e.currentTarget.value)
               }
+              onKeyPress={onEnter}
             />
             <button
+              ref={submitButton}
               onClick={() => {
                 const data: UserLoginDTO = {
                   username: username.current,

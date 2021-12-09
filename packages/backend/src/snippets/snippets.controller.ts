@@ -10,6 +10,7 @@ import {
   Post,
   Request,
   Put,
+  Query,
   UseGuards,
   UseFilters,
   UnauthorizedException,
@@ -32,7 +33,12 @@ export class SnippetsController {
   logger: Logger = new Logger(SnippetsController.name);
 
   @Get()
-  async getAllSnippets() {
+  async getAllSnippets(
+    @Query('take') take: number,
+    @Query('skip') skip: number,
+  ) {
+    Logger.log(take);
+    Logger.log(skip);
     return this.snippetService.getAll();
   }
 

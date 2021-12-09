@@ -1,9 +1,9 @@
-import UpIcon from '@components/icons/up';
+import { MouseEventHandler } from 'react';
 import clsx from 'clsx';
 
 interface FloatingButtonProps {
-  onClick: (e: MouseEvent) => void;
-  icon?: JSX.Element;
+  onClick: MouseEventHandler<HTMLDivElement>;
+  children: JSX.Element;
   visible?: boolean;
   className?: string;
 }
@@ -11,15 +11,17 @@ interface FloatingButtonProps {
 export default function FloatingButton(props: FloatingButtonProps) {
   return (
     <div
+      onClick={props.onClick}
       className={clsx(
         props.className,
-        'rounded-full bg-sky-700 hover:bg-sky-600 p-2 shadow-lg',
+        'rounded-full bg-sky-700 hover:bg-sky-600 p-2 shadow-lg cursor-pointer animate__animated animate__faster',
         {
-          hidden: !props.visible,
+          animate__fadeIn: props.visible,
+          animate__fadeOut: !props.visible,
         },
       )}
     >
-      <UpIcon className="h-8 w-8 m-auto text-white" />
+      {props.children}
     </div>
   );
 }
