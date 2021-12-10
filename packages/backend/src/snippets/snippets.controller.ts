@@ -37,9 +37,22 @@ export class SnippetsController {
     @Query('take') take: number,
     @Query('skip') skip: number,
   ) {
-    Logger.log(take);
-    Logger.log(skip);
-    return this.snippetService.getAll();
+    return this.snippetService.getAll({ take, skip });
+  }
+
+  @UseGuards(JwtAuthGuard)
+  @Get('mine')
+  async getOwnSnippets(
+    @Request() request: Req,
+    @Query('take') take: number,
+    @Query('skip') skip: number,
+  ) {
+    const user: any = request.user;
+    return this.snippetService.getAll({
+      take,
+      skip,
+      owner: { id: user.userId },
+    });
   }
 
   @UseFilters(EntityNotFoundFilter)
@@ -55,7 +68,6 @@ export class SnippetsController {
     @Request() request: Req,
   ) {
     const user: any = request.user;
-    this.logger.log(JSON.stringify(user));
     try {
       return this.snippetService.create(code, language, user['userId'], title);
     } catch (error) {

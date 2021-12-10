@@ -1,9 +1,11 @@
-import { Injectable } from '@nestjs/common';
-import { InjectRepository } from '@nestjs/typeorm';
-import { Repository } from 'typeorm';
+import { Pagination, SnippetWhere } from '@database/database.dto';
 import { Snippet } from '@entities/snippet.entity';
 import { User } from '@entities/user.entity';
-import { Pagination } from '@database/database.dto';
+import { Injectable, Logger } from '@nestjs/common';
+import { InjectRepository } from '@nestjs/typeorm';
+import * as _ from 'lodash';
+import { Repository } from 'typeorm';
+import { addCondition, addPagination } from '@database/database.utils';
 
 @Injectable()
 export class SnippetsService {
@@ -12,8 +14,22 @@ export class SnippetsService {
     @InjectRepository(User) private userRepository: Repository<User>,
   ) {}
 
-  async getAll(options?: Pagination): Promise<Snippet[]> {
-    return this.snippetRepository.find({ ...options, relations: ['owner'] });
+  async getAll(options?: Pagination & SnippetWhere): Promise<Snippet[]> {
+    Logger.log(options);
+
+    let qb = this.snippetRepository.createQueryBuilder('snippet');
+
+    const { owner, ...rest } = options;
+
+    qb = qb.leftJoinAndSelect('owner.username', 'owner');
+
+    // if (!(_.isNil(owner) || _.isEmpty(owner))) {
+    //   qb = addCondition<Snippet>(qb, 'snippet."ownerId" = :id', owner);
+    // }
+
+    // qb = addPagination(qb, rest);
+
+    return qb.getMany();
   }
 
   async findById(id: string): Promise<Snippet> {

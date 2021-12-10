@@ -3,7 +3,7 @@ const routes: Record<string, string> = {
   editsnippet: '/snippets/edit/[id]',
   home: '/home',
   login: '/login',
-  mine: '/mine',
+  mine: '/snippets/mine',
   register: '/register',
   root: '/',
   snippet: '/snippets/[id]',

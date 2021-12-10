@@ -1,17 +1,18 @@
-import isNil from 'lodash/isNil';
 import { languages } from '@data/constants';
+import { SnippetPostDTO, SnippetPutDTO, Snippet } from '@data/snippet.dto';
+import clsx from 'clsx';
+import hljs from 'highlight.js';
+import isNil from 'lodash/isNil';
 import {
   UIEvent,
   FormEvent,
   KeyboardEvent,
   ChangeEvent,
+  RefObject,
   useState,
   useEffect,
   useRef,
 } from 'react';
-import clsx from 'clsx';
-import hljs from 'highlight.js';
-import { SnippetPostDTO, SnippetPutDTO, Snippet } from '@data/snippet.dto';
 import 'highlight.js/styles/github.css';
 
 // titleStyle: classes for white bg input with blue border
@@ -30,17 +31,18 @@ interface EditorProps {
   recover?: boolean;
   onSave: (body: SnippetPostDTO | SnippetPutDTO) => void;
   onCancel?: () => void;
+  innerRef?: RefObject<HTMLButtonElement>;
 }
 
 export default function Editor(props: EditorProps) {
-  const { recover, snippet } = props;
+  const { snippet } = props;
   const preRef = useRef<HTMLPreElement>();
-  const [title, setTitle] = useState(recover ? snippet?.title : null);
-  const [language, setLanguage] = useState(
-    recover ? snippet?.language : 'javascript',
+  const [title, setTitle] = useState<string>(null);
+  const [language, setLanguage] = useState<string>(
+    snippet?.language ?? 'javascript',
   );
-  const [code, setCode] = useState(recover ? snippet?.code : '');
-  const [highlightedCode, setHighlightedCode] = useState('');
+  const [code, setCode] = useState<string>(null);
+  const [highlightedCode, setHighlightedCode] = useState<string>(null);
 
   useEffect(() => {
     if (!isNil(snippet)) {
@@ -48,9 +50,12 @@ export default function Editor(props: EditorProps) {
         hljs.highlight(snippet.code, { language: snippet.language }).value,
       );
     }
-  });
+  }, []);
+
   useEffect(() => {
-    setHighlightedCode(hljs.highlight(code, { language }).value);
+    if (!isNil(code)) {
+      setHighlightedCode(hljs.highlight(code, { language }).value);
+    }
   }, [code, language]);
 
   return (
@@ -59,7 +64,7 @@ export default function Editor(props: EditorProps) {
       <input
         type="text"
         placeholder="// Title"
-        defaultValue={!recover ? snippet?.title : undefined}
+        defaultValue={snippet?.title ?? undefined}
         onInput={(e: FormEvent<HTMLInputElement>) =>
           setTitle(e.currentTarget.value)
         }
@@ -69,7 +74,7 @@ export default function Editor(props: EditorProps) {
         <textarea
           id="editor"
           placeholder="// Code"
-          defaultValue={!recover ? snippet?.code : undefined}
+          defaultValue={snippet?.code ?? undefined}
           className={clsx(
             'text-transparent ring-transparent bg-transparent caret-sky-900 z-40 focus:outline-none resize-none',
             editor,
@@ -129,6 +134,7 @@ export default function Editor(props: EditorProps) {
           ))}
         </select>
         <button
+          ref={props.innerRef}
           onClick={() => props.onSave({ title, code, language })}
           className="rounded-lg px-8 py-2 my-auto bg-orange-400 text-white text-xl font-semibold"
         >
@@ -137,7 +143,10 @@ export default function Editor(props: EditorProps) {
       </div>
       {!isNil(props.onCancel) && (
         <div className="flex flex-row justify-end my-1">
-          <span className="text-red-500 underline hover:text-red-300 cursor-pointer">
+          <span
+            onClick={props.onCancel}
+            className="text-red-500 underline hover:text-red-300 cursor-pointer"
+          >
             Cancel
           </span>
         </div>

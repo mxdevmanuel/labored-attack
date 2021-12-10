@@ -37,6 +37,7 @@ export default class AuthHttpClient extends BaseHttpClient {
     createSnippet: '/snippets',
     deleteSnippet: '/snippets',
     getSnippets: '/snippets',
+    getMySnippets: '/snippets/mine',
     getSnippet: '/snippets',
     login: '/auth/login',
     logout: '/auth/logout',
@@ -100,12 +101,21 @@ export default class AuthHttpClient extends BaseHttpClient {
     );
     return response.data;
   }
+
   async listSnippets(): Promise<Snippet[]> {
     const response = await this.instance.get<Snippet[]>(this.urls.getSnippets);
     return response.data;
   }
 
+  async listMySnippets(): Promise<Snippet[]> {
+    const response = await this.instance.get<Snippet[]>(
+      this.urls.getMySnippets,
+    );
+    return response.data;
+  }
+
   async updateSnippet(data: SnippetPutDTO): Promise<Snippet> {
+    console.log(data);
     const validation = await validateSnippetPutBody(data);
     if (validation !== undefined) {
       throw new InvalidDataException('Invalid create user data', validation);

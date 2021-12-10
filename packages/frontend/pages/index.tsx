@@ -26,15 +26,64 @@ export default function Home() {
   const router = useRouter();
   const { current: client } = useRef(new HttpClient());
   const [alerts, addAlert] = useAlert();
-  const [snippet, setSnippet] = useState(null);
+  const [snippet, setSnippet] = useState<Snippet>(null);
+  const onSave = (body: SnippetPostDTO) =>
+    validateSnippetPostBody(body)
+      .then((errors: Record<string, string[]>) => {
+        if (isNil(errors)) {
+          return client.createSnippet(body);
+        } else {
+          return Promise.reject({
+            name: 'ValidationError',
+            errors,
+          });
+        }
+      })
+      .then((snippet: Snippet) => {
+        addAlert(
+          generateSuccessAlert(
+            `Snippet${snippet.title ? ' ' + snippet.title : ' '} created`,
+            () => {
+              router.push({
+                pathname: routes.snippet,
+                query: { id: snippet.id },
+              });
+            },
+          ),
+        );
+      })
+      .catch((error: AxiosError | ValidationError) => {
+        if (error.name === 'ValidationError') {
+          addAlert(
+            generateErrorAlert(
+              validationToMsg((error as ValidationError).errors),
+            ),
+          );
+        }
+        if (
+          error.name === 'Error' &&
+          (error as AxiosError).response.status ===
+            HttpClient.HttpErrors.UNAUTHORIZED
+        ) {
+          sessionStorage.setItem('body', JSON.stringify(body));
+          router.push({
+            pathname: routes.login,
+            query: { back: true },
+          });
+        }
+      });
+
   useEffect(() => {
     if (router.query.back) {
       const body: string = sessionStorage.getItem('body');
       if (!isNil(body)) {
-        setSnippet(JSON.parse(body));
+        const data: SnippetPostDTO = JSON.parse(body);
+        setSnippet(data as Snippet);
+        onSave(data);
       }
     }
   }, []);
+
   return (
     <Fragment>
       <Head title="Inicio" />
@@ -46,55 +95,7 @@ export default function Home() {
             <Editor
               title="Create new snippet"
               snippet={snippet}
-              recover={!isNil(snippet)}
-              onSave={(body: SnippetPostDTO) =>
-                validateSnippetPostBody(body)
-                  .then((errors: Record<string, string[]>) => {
-                    if (isNil(errors)) {
-                      return client.createSnippet(body);
-                    } else {
-                      return Promise.reject({
-                        name: 'ValidationError',
-                        errors,
-                      });
-                    }
-                  })
-                  .then((snippet: Snippet) => {
-                    addAlert(
-                      generateSuccessAlert(
-                        `Snippet${
-                          snippet.title ? ' ' + snippet.title : ' '
-                        } created`,
-                        () => {
-                          router.push({
-                            pathname: routes.snippet,
-                            query: { id: snippet.id },
-                          });
-                        },
-                      ),
-                    );
-                  })
-                  .catch((error: AxiosError | ValidationError) => {
-                    if (error.name === 'ValidationError') {
-                      addAlert(
-                        generateErrorAlert(
-                          validationToMsg((error as ValidationError).errors),
-                        ),
-                      );
-                    }
-                    if (
-                      error.name === 'Error' &&
-                      (error as AxiosError).response.status ===
-                        HttpClient.HttpErrors.UNAUTHORIZED
-                    ) {
-                      sessionStorage.setItem('body', JSON.stringify(body));
-                      router.push({
-                        pathname: routes.login,
-                        query: { back: true },
-                      });
-                    }
-                  })
-              }
+              onSave={onSave}
             ></Editor>
           </section>
         </main>
