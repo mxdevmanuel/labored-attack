@@ -3,7 +3,6 @@ import InfoIcon from '@components/icons/info';
 import WarningIcon from '@components/icons/warning';
 import ErrorIcon from '@components/icons/error';
 import SuccessIcon from '@components/icons/success';
-import { openStdin } from 'process';
 
 export const generateErrorAlert = (
   message: JSX.Element | string,
@@ -47,6 +46,7 @@ export const generateWarningAlert = (
   title: <span className="text-xl text-orange-800 text-bold">Warning</span>,
   buttonText: options.confirmText,
   buttonClasses: options.confirmClasses,
+  containerClasses: 'animate__animated animate__jello',
 });
 
 export const generateSuccessAlert = (

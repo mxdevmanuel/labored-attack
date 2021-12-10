@@ -13,7 +13,7 @@ export class SnippetsService {
   ) {}
 
   async getAll(options?: Pagination): Promise<Snippet[]> {
-    return this.snippetRepository.find({ ...options });
+    return this.snippetRepository.find({ ...options, relations: ['owner'] });
   }
 
   async findById(id: string): Promise<Snippet> {
