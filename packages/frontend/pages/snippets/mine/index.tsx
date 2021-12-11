@@ -75,8 +75,11 @@ export default function MySnippets(props: MySnippetsProps) {
         className="h-screen overflow-y-scroll bg-sky-900 pb-5 -mb-5"
       >
         <Navbar innerRef={setTop} />
-        <div className="flex flex-row">
-          <List className="w-3/4" snippets={snippets}></List>
+        <div className="flex flex-row justify-center">
+          <List
+            className="mx-1 w-full lg:mx-auto lg:w-3/4"
+            snippets={snippets}
+          ></List>
         </div>
         <FloatingButton
           className="absolute right-10 bottom-20"

@@ -44,7 +44,6 @@ export default function Edit({ snippet }: EditProps) {
   const router = useRouter();
   const { current: client } = useRef(new HttpClient());
   const [alerts, addAlert] = useAlert();
-  console.log(router.query.id);
   return (
     <Fragment>
       <Head title="Edit" />

@@ -3,9 +3,7 @@ import { Snippet } from '@data/snippet.dto';
 import routes from '@routing/routes';
 import dayjs from 'dayjs';
 import capitalize from 'lodash/capitalize';
-import Link from 'next/link';
 import router from 'next/router';
-import { Fragment } from 'react';
 
 interface ListTileProps {
   snippet: Snippet;
