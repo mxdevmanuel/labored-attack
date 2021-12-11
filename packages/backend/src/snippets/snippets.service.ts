@@ -15,19 +15,17 @@ export class SnippetsService {
   ) {}
 
   async getAll(options?: Pagination & SnippetWhere): Promise<Snippet[]> {
-    Logger.log(options);
-
     let qb = this.snippetRepository.createQueryBuilder('snippet');
 
     const { owner, ...rest } = options;
 
-    qb = qb.leftJoinAndSelect('owner.username', 'owner');
+    qb = qb.leftJoin('snippet.owner', 'owner').addSelect('owner.username');
 
-    // if (!(_.isNil(owner) || _.isEmpty(owner))) {
-    //   qb = addCondition<Snippet>(qb, 'snippet."ownerId" = :id', owner);
-    // }
+    if (!(_.isNil(owner) || _.isEmpty(owner))) {
+      qb = addCondition<Snippet>(qb, 'snippet."ownerId" = :id', owner);
+    }
 
-    // qb = addPagination(qb, rest);
+    qb = addPagination(qb, rest);
 
     return qb.getMany();
   }

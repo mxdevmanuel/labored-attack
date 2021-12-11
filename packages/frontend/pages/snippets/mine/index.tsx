@@ -2,11 +2,11 @@ import UpIcon from '@components/icons/up';
 import FloatingButton from '@components/floatingbutton';
 import { Snippet } from '@data/snippet.dto';
 import Head from '@components/head';
+import Loading from '@components/loading';
 import Navbar from '@components/navbar';
 import List from '@components/list';
 import Footer from '@components/footer';
 import HttpClient from '@data/httpclient';
-import { GetServerSidePropsContext, GetServerSidePropsResult } from 'next';
 import hljs from 'highlight.js';
 import 'highlight.js/styles/github.css';
 import { useEffect, useState, useRef } from 'react';
@@ -15,22 +15,11 @@ interface MySnippetsProps {
   snippets: Snippet[];
 }
 
-export async function getServerSideProps(
-  context: GetServerSidePropsContext,
-): Promise<GetServerSidePropsResult<MySnippetsProps>> {
-  try {
-    const client = new HttpClient();
-    const snippets = await client.listMySnippets();
-    return { props: { snippets } };
-  } catch (err) {
-    console.error(err);
-    throw err;
-  }
-}
-
 export default function MySnippets(props: MySnippetsProps) {
   const [atTop, setAtTop] = useState<boolean>(true);
 
+  const [snippets, setSnippets] = useState<Snippet[]>(null);
+  const { current: client } = useRef(new HttpClient());
   const scrollContainer = useRef<HTMLDivElement>(null);
   const topEl = useRef<HTMLElement>(null);
   const topObserver = useRef<IntersectionObserver>(null);
@@ -45,7 +34,13 @@ export default function MySnippets(props: MySnippetsProps) {
     );
     topObserver.current = observer;
 
-    hljs.highlightAll();
+    client
+      .listMySnippets()
+      .then((snippets: Snippet[]) => {
+        setSnippets(snippets);
+        hljs.highlightAll();
+      })
+      .catch(console.error);
   }, []);
 
   useEffect(() => {
@@ -58,6 +53,8 @@ export default function MySnippets(props: MySnippetsProps) {
     };
   }, [topEl]);
 
+  if (snippets === null) return <Loading />;
+
   return (
     <>
       <Head title="snippets" />
@@ -67,7 +64,7 @@ export default function MySnippets(props: MySnippetsProps) {
       >
         <Navbar innerRef={topEl} />
         <div className="flex flex-row">
-          <List className="w-3/4" snippets={props.snippets}></List>
+          <List className="w-3/4" snippets={snippets}></List>
         </div>
         <FloatingButton
           className="absolute right-10 bottom-20"
