@@ -4,7 +4,6 @@ import { Snippet } from '@data/snippet.dto';
 import Head from '@components/head';
 import Navbar from '@components/navbar';
 import List from '@components/list';
-import Footer from '@components/footer';
 import HttpClient from '@data/httpclient';
 import { GetServerSidePropsContext, GetServerSidePropsResult } from 'next';
 import hljs from 'highlight.js';
@@ -15,11 +14,9 @@ interface SnippetsProps {
   snippets: Snippet[];
 }
 
-export async function getServerSideProps({
-  query,
-}: GetServerSidePropsContext): Promise<
-  GetServerSidePropsResult<SnippetsProps>
-> {
+export async function getServerSideProps(
+  context: GetServerSidePropsContext,
+): Promise<GetServerSidePropsResult<SnippetsProps>> {
   const client = new HttpClient();
   const snippets = await client.listSnippets();
   return { props: { snippets } };
@@ -60,11 +57,14 @@ export default function Snippets(props: SnippetsProps) {
       <Head title="snippets" />
       <div
         ref={scrollContainer}
-        className="h-screen overflow-scroll bg-sky-900 pb-5 -mb-5"
+        className="h-screen overflow-y-scroll bg-sky-900 pb-5 -mb-5"
       >
         <Navbar innerRef={topEl} />
-        <div className="flex flex-row">
-          <List className="w-3/4" snippets={props.snippets}></List>
+        <div className="flex flex-row justify-center">
+          <List
+            className="w-full mx-5 lg:mx-auto lg:w-3/4"
+            snippets={props.snippets}
+          ></List>
         </div>
         <FloatingButton
           className="absolute right-10 bottom-20"
@@ -75,7 +75,6 @@ export default function Snippets(props: SnippetsProps) {
         >
           <UpIcon className="h-8 w-8 m-auto text-white" />
         </FloatingButton>
-        <Footer />
       </div>
     </>
   );

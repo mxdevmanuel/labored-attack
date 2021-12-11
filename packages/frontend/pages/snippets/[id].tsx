@@ -3,7 +3,6 @@ import {
   generateWarningAlert,
   generateSuccessAlert,
 } from '@components/alerts';
-import Footer from '@components/footer';
 import Head from '@components/head';
 import NavBar from '@components/navbar';
 import Viewer from '@components/viewer';
@@ -110,7 +109,9 @@ export default function SnippetById({ snippet }: SnippetByIdProps) {
                       'Are you sure you want to delete this snippet',
                       {
                         confirmText: 'Confirm',
-                        onCancel: () => {},
+                        onCancel: () => {
+                          console.log('Cancelled');
+                        },
                         onConfirm: () => {
                           client
                             .deleteSnippet(id)
@@ -136,7 +137,6 @@ export default function SnippetById({ snippet }: SnippetByIdProps) {
             <Viewer snippet={snippet} />
           </section>
         </main>
-        <Footer />
       </div>
     </Fragment>
   );

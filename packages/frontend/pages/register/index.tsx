@@ -13,7 +13,6 @@ import {
   validationToMsg,
 } from '@components/alerts';
 import NavBar from '@components/navbar';
-import Footer from '@components/footer';
 import HttpClient from '@data/httpclient';
 import { validateUserPostBody, UserPostDTO, User } from '@data/user.dto';
 import routes from '@routing/routes';
@@ -132,21 +131,20 @@ export default function Register() {
             </Link>
           </section>
         </main>
-        <Footer />
       </TopologyBackground>
     </Fragment>
   );
 }
 
+const queryErrorRegex = /\(([A-z0-9]+)\)=\(([A-z0-9]+)\)(.*)/;
 const httpErrorExtractor = ({ response }: AxiosError): JSX.Element | string => {
   const status = response?.status;
   const data = response?.data;
 
+  let mtch: RegExpMatchArray;
   switch (status) {
     case HttpClient.HttpErrors.CONFLICT:
-      const mtch = (data.detail as string)?.match(
-        /\(([A-z0-9]+)\)=\(([A-z0-9]+)\)(.*)/,
-      );
+      mtch = (data.detail as string)?.match(queryErrorRegex);
       return (
         <p>
           {capitalize(mtch[1])} <span className="font-semibold">{mtch[2]}</span>{' '}

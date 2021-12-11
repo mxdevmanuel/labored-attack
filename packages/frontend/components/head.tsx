@@ -6,7 +6,7 @@ interface BubblesProps {
 export default function Bubbles(props: BubblesProps) {
   return (
     <Head>
-      <title>Snipster - {props.title}</title>
+      <title>Snipper - {props.title}</title>
       <link rel="icon" href="/favicon.ico" />
     </Head>
   );

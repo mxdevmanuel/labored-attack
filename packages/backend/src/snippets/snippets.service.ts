@@ -9,6 +9,8 @@ import { addCondition, addPagination } from '@database/database.utils';
 
 @Injectable()
 export class SnippetsService {
+  logger: Logger = new Logger(SnippetsService.name);
+
   constructor(
     @InjectRepository(Snippet) private snippetRepository: Repository<Snippet>,
     @InjectRepository(User) private userRepository: Repository<User>,

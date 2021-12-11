@@ -5,7 +5,6 @@ import {
   validationToMsg,
 } from '@components/alerts';
 import Editor from '@components/editor';
-import Footer from '@components/footer';
 import Head from '@components/head';
 import NavBar from '@components/navbar';
 import HttpClient from '@data/httpclient';
@@ -99,7 +98,7 @@ export default function Edit({ snippet }: EditProps) {
                       );
                     }
                     if (
-                      error.name === 'Error' &&
+                      error.name === 'AxiosError' &&
                       (error as AxiosError).response.status ===
                         HttpClient.HttpErrors.UNAUTHORIZED
                     ) {
@@ -112,7 +111,6 @@ export default function Edit({ snippet }: EditProps) {
             ></Editor>
           </section>
         </main>
-        <Footer />
       </div>
     </Fragment>
   );

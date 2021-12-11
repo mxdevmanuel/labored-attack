@@ -5,24 +5,27 @@ import Head from '@components/head';
 import Loading from '@components/loading';
 import Navbar from '@components/navbar';
 import List from '@components/list';
-import Footer from '@components/footer';
 import HttpClient from '@data/httpclient';
+import routes from '@routing/routes';
+import { AxiosError } from 'axios';
 import hljs from 'highlight.js';
-import 'highlight.js/styles/github.css';
+import { useRouter } from 'next/router';
 import { useEffect, useState, useRef } from 'react';
+import 'highlight.js/styles/github.css';
 
 interface MySnippetsProps {
   snippets: Snippet[];
 }
 
 export default function MySnippets(props: MySnippetsProps) {
-  const [atTop, setAtTop] = useState<boolean>(true);
-
-  const [snippets, setSnippets] = useState<Snippet[]>(null);
   const { current: client } = useRef(new HttpClient());
   const scrollContainer = useRef<HTMLDivElement>(null);
-  const topEl = useRef<HTMLElement>(null);
   const topObserver = useRef<IntersectionObserver>(null);
+  const router = useRouter();
+
+  const [atTop, setAtTop] = useState<boolean>(true);
+  const [snippets, setSnippets] = useState<Snippet[]>(null);
+  const [top, setTop] = useState<HTMLElement>(null);
 
   useEffect(() => {
     const observer = new IntersectionObserver(
@@ -40,18 +43,27 @@ export default function MySnippets(props: MySnippetsProps) {
         setSnippets(snippets);
         hljs.highlightAll();
       })
-      .catch(console.error);
+      .catch((err) => {
+        if (err.name === 'AxiosError') {
+          if (
+            (err as AxiosError).response.status ===
+            HttpClient.HttpErrors.UNAUTHORIZED
+          ) {
+            router.replace({ pathname: routes.login });
+          }
+        }
+      });
   }, []);
 
   useEffect(() => {
     const observer = topObserver.current;
-    if (topEl.current) {
-      observer.observe(topEl.current);
+    if (top) {
+      observer.observe(top);
     }
     return () => {
       observer.disconnect();
     };
-  }, [topEl]);
+  }, [top]);
 
   if (snippets === null) return <Loading />;
 
@@ -60,9 +72,9 @@ export default function MySnippets(props: MySnippetsProps) {
       <Head title="snippets" />
       <div
         ref={scrollContainer}
-        className="h-screen overflow-scroll bg-sky-900 pb-5 -mb-5"
+        className="h-screen overflow-y-scroll bg-sky-900 pb-5 -mb-5"
       >
-        <Navbar innerRef={topEl} />
+        <Navbar innerRef={setTop} />
         <div className="flex flex-row">
           <List className="w-3/4" snippets={snippets}></List>
         </div>
@@ -75,7 +87,6 @@ export default function MySnippets(props: MySnippetsProps) {
         >
           <UpIcon className="h-8 w-8 m-auto text-white" />
         </FloatingButton>
-        <Footer />
       </div>
     </>
   );

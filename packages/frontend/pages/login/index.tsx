@@ -3,7 +3,6 @@ import {
   generateErrorAlert,
   validationToMsg,
 } from '@components/alerts';
-import Footer from '@components/footer';
 import Head from '@components/head';
 import NavBar from '@components/navbar';
 import TopologyBackground from '@components/topologybackground';
@@ -110,7 +109,6 @@ export default function Login() {
             </Link>
           </section>
         </main>
-        <Footer />
       </TopologyBackground>
     </Fragment>
   );

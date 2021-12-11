@@ -3,7 +3,6 @@ import { useRouter } from 'next/router';
 import Head from '@components/head';
 import NavBar from '@components/navbar';
 import Editor from '@components/editor';
-import Footer from '@components/footer';
 import {
   validateSnippetPostBody,
   SnippetPostDTO,
@@ -61,7 +60,7 @@ export default function Home() {
           );
         }
         if (
-          error.name === 'Error' &&
+          error.name === 'AxiosError' &&
           (error as AxiosError).response.status ===
             HttpClient.HttpErrors.UNAUTHORIZED
         ) {
@@ -99,7 +98,6 @@ export default function Home() {
             ></Editor>
           </section>
         </main>
-        <Footer />
       </div>
     </Fragment>
   );

@@ -163,6 +163,7 @@ export default class AuthHttpClient extends BaseHttpClient {
   }
 
   protected _errorHandler(error: AxiosError) {
+    error.name = 'AxiosError';
     return Promise.reject(error);
   }
 }
