@@ -39,6 +39,10 @@ export class SnippetsService {
     );
   }
 
+  async getCount(): Promise<number> {
+    return this.snippetRepository.count();
+  }
+
   async create(
     code: string,
     language: string,

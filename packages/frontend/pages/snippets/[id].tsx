@@ -12,7 +12,6 @@ import { Profile } from '@data/user.dto';
 import routes from '@routing/routes';
 import clsx from 'clsx';
 import capitalize from 'lodash/capitalize';
-import isArray from 'lodash/isArray';
 import { GetServerSidePropsResult, GetServerSidePropsContext } from 'next';
 import Link from 'next/link';
 import { useRouter } from 'next/router';
@@ -31,7 +30,7 @@ export async function getServerSideProps({
     const client = new HttpClient();
 
     let snippetId = params.id;
-    if (isArray(params.id)) {
+    if (Array.isArray(params.id)) {
       snippetId = params.id[0];
     }
     const ret: SnippetByIdProps = {
@@ -52,7 +51,7 @@ export default function SnippetById({ snippet }: SnippetByIdProps) {
 
   useEffect(() => {
     client.profile().then(setProfile).catch(console.error);
-    if (isArray(router.query.id)) {
+    if (Array.isArray(router.query.id)) {
       setId(router.query.id[0]);
     } else {
       setId(router.query.id as string);

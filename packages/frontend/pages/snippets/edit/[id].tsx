@@ -15,7 +15,6 @@ import {
 } from '@data/snippet.dto';
 import routes from '@routing/routes';
 import { AxiosError } from 'axios';
-import isArray from 'lodash/isArray';
 import isNil from 'lodash/isNil';
 import omitBy from 'lodash/omitBy';
 import { GetServerSidePropsContext, GetServerSidePropsResult } from 'next';
@@ -33,7 +32,7 @@ export async function getServerSideProps({
 }: GetServerSidePropsContext): Promise<GetServerSidePropsResult<EditProps>> {
   const client = new HttpClient();
   let snippetId: string | string[] = params.id;
-  if (isArray(params.id)) {
+  if (Array.isArray(params.id)) {
     snippetId = params.id[0];
   }
   const snippet = await client.getSnippet(snippetId as string);

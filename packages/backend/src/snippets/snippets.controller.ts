@@ -40,6 +40,11 @@ export class SnippetsController {
     return this.snippetService.getAll({ take, skip });
   }
 
+  @Get('count')
+  async getSnippetCount() {
+    return this.snippetService.getCount();
+  }
+
   @UseGuards(JwtAuthGuard)
   @Get('mine')
   async getOwnSnippets(

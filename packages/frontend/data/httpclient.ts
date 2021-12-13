@@ -1,6 +1,14 @@
-import InvalidDataException from '@errors/invaliddata.exception';
-import { AxiosRequestConfig, AxiosResponse, AxiosError } from 'axios';
 import BaseHttpClient from './client.base';
+import { take } from './constants';
+import { PaginationDTO } from './pagination.dto';
+import {
+  Snippet,
+  SnippetPostDTO,
+  SnippetPutDTO,
+  validateSnippetPostBody,
+  validateSnippetPutBody,
+  validateSnippetId,
+} from './snippet.dto';
 import {
   Profile,
   ProfileDTO,
@@ -11,14 +19,8 @@ import {
   validateUserPostBody,
   validateUserLoginBody,
 } from './user.dto';
-import {
-  Snippet,
-  SnippetPostDTO,
-  SnippetPutDTO,
-  validateSnippetPostBody,
-  validateSnippetPutBody,
-  validateSnippetId,
-} from './snippet.dto';
+import InvalidDataException from '@errors/invaliddata.exception';
+import { AxiosRequestConfig, AxiosResponse, AxiosError } from 'axios';
 
 const baseUrl = 'http://localhost:3000';
 
@@ -36,9 +38,10 @@ export default class AuthHttpClient extends BaseHttpClient {
   readonly urls: Record<string, string> = {
     createSnippet: '/snippets',
     deleteSnippet: '/snippets',
-    getSnippets: '/snippets',
+    getCount: '/snippets/count',
     getMySnippets: '/snippets/mine',
     getSnippet: '/snippets',
+    getSnippets: '/snippets',
     login: '/auth/login',
     logout: '/auth/logout',
     register: '/auth/register',
@@ -102,8 +105,15 @@ export default class AuthHttpClient extends BaseHttpClient {
     return response.data;
   }
 
-  async listSnippets(): Promise<Snippet[]> {
-    const response = await this.instance.get<Snippet[]>(this.urls.getSnippets);
+  async getCount(): Promise<number> {
+    const response = await this.instance.get<number>(this.urls.getCount);
+    return response.data;
+  }
+
+  async listSnippets(options: PaginationDTO = { take }): Promise<Snippet[]> {
+    const response = await this.instance.get<Snippet[]>(this.urls.getSnippets, {
+      params: options,
+    });
     return response.data;
   }
 
@@ -141,7 +151,7 @@ export default class AuthHttpClient extends BaseHttpClient {
     return response.status === HttpStatus.SUCCESS;
   }
 
-  _initializeRequestInterceptor() {
+  protected _initializeRequestInterceptor() {
     this.instance.interceptors.request.use((request: AxiosRequestConfig) => {
       if (this.token !== null) {
         request.headers['Authorization'] = `Bearer ${this.token}`;
@@ -150,7 +160,7 @@ export default class AuthHttpClient extends BaseHttpClient {
     });
   }
 
-  _initializeResponseInterceptor() {
+  protected _initializeResponseInterceptor() {
     this.instance.interceptors.response.use(
       (response: AxiosResponse<LoginDTO>) => {
         if (response.config.url === this.urls.login) {

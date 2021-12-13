@@ -1,25 +1,41 @@
-import UpIcon from '@components/icons/up';
 import FloatingButton from '@components/floatingbutton';
-import { Snippet } from '@data/snippet.dto';
 import Head from '@components/head';
-import Navbar from '@components/navbar';
+import UpIcon from '@components/icons/up';
 import List from '@components/list';
+import Navbar from '@components/navbar';
+import Pagination from '@components/pagination';
+import { take } from '@data/constants';
 import HttpClient from '@data/httpclient';
-import { GetServerSidePropsContext, GetServerSidePropsResult } from 'next';
+import { PaginationDTO } from '@data/pagination.dto';
+import { Snippet } from '@data/snippet.dto';
 import hljs from 'highlight.js';
-import 'highlight.js/styles/github.css';
+import { GetServerSidePropsContext, GetServerSidePropsResult } from 'next';
 import { useEffect, useState, useRef } from 'react';
+import 'highlight.js/styles/github.css';
 
 interface SnippetsProps {
   snippets: Snippet[];
+  pages: number;
 }
 
-export async function getServerSideProps(
-  context: GetServerSidePropsContext,
-): Promise<GetServerSidePropsResult<SnippetsProps>> {
+export async function getServerSideProps({
+  query,
+}: GetServerSidePropsContext): Promise<
+  GetServerSidePropsResult<SnippetsProps>
+> {
   const client = new HttpClient();
-  const snippets = await client.listSnippets();
-  return { props: { snippets } };
+  const q: PaginationDTO = { take, skip: 0 };
+  if (query.page) {
+    let page = query.page;
+    if (Array.isArray(page)) {
+      page = page[0];
+    }
+    q.skip = (parseInt(page) - 1) * take;
+  }
+  const snippets = await client.listSnippets(q);
+  const count = await client.getCount();
+  const pages = Math.ceil(count / take);
+  return { props: { snippets, pages } };
 }
 
 export default function Snippets(props: SnippetsProps) {
@@ -60,11 +76,18 @@ export default function Snippets(props: SnippetsProps) {
         className="h-screen overflow-y-scroll bg-sky-900 pb-5 -mb-5"
       >
         <Navbar innerRef={topEl} />
-        <div className="flex flex-row justify-center">
+        <div className="flex flex-col justify-center">
           <List
             className="w-full mx-5 lg:mx-auto lg:w-3/4"
             snippets={props.snippets}
-          ></List>
+          />
+          <Pagination
+            currentPage={1}
+            pages={[1, 2, 3]}
+            setPage={(page: number) => {}}
+            onPrev={() => {}}
+            onNext={() => {}}
+          />
         </div>
         <FloatingButton
           className="absolute right-10 bottom-20"
