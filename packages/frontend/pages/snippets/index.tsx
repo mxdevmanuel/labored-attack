@@ -25,12 +25,14 @@ export async function getServerSideProps({
 > {
   const client = new HttpClient();
   const q: PaginationDTO = { take, skip: 0 };
+  let page = 1;
   if (query.page) {
-    let page = query.page;
-    if (Array.isArray(page)) {
-      page = page[0];
+    let pageStr = query.page;
+    if (Array.isArray(pageStr)) {
+      pageStr = pageStr[0];
     }
-    q.skip = (parseInt(page) - 1) * take;
+    page = parseInt(pageStr);
+    q.skip = (page - 1) * take;
   }
   const snippets = await client.listSnippets(q);
   const count = await client.getCount();
