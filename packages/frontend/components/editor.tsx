@@ -28,6 +28,7 @@ const editor =
 interface EditorProps<T> {
   title: string;
   snippet?: Snippet;
+  model: T;
   recover?: boolean;
   onSave: (body: T) => void;
   onCancel?: () => void;
