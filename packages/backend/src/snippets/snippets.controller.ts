@@ -60,6 +60,15 @@ export class SnippetsController {
     });
   }
 
+  @UseGuards(JwtAuthGuard)
+  @Get('mine/count')
+  async getOwnSnippetCount(@Request() request: Req) {
+    const user: any = request.user;
+    return this.snippetService.getCount({
+      owner: { id: user.userId },
+    });
+  }
+
   @UseFilters(EntityNotFoundFilter)
   @Get(':snippetId')
   async getSnippetById(@Param('snippetId') id: string) {

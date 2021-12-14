@@ -8,14 +8,17 @@ import { take } from '@data/constants';
 import HttpClient from '@data/httpclient';
 import { PaginationDTO } from '@data/pagination.dto';
 import { Snippet } from '@data/snippet.dto';
+import routes from '@routing/routes';
 import hljs from 'highlight.js';
 import { GetServerSidePropsContext, GetServerSidePropsResult } from 'next';
+import { useRouter } from 'next/router';
 import { useEffect, useState, useRef } from 'react';
 import 'highlight.js/styles/github.css';
 
 interface SnippetsProps {
   snippets: Snippet[];
-  pages: number;
+  pageCount: number;
+  page: number;
 }
 
 export async function getServerSideProps({
@@ -36,8 +39,8 @@ export async function getServerSideProps({
   }
   const snippets = await client.listSnippets(q);
   const count = await client.getCount();
-  const pages = Math.ceil(count / take);
-  return { props: { snippets, pages } };
+  const pageCount = Math.ceil(count / take);
+  return { props: { snippets, pageCount, page } };
 }
 
 export default function Snippets(props: SnippetsProps) {
@@ -46,6 +49,7 @@ export default function Snippets(props: SnippetsProps) {
   const scrollContainer = useRef<HTMLDivElement>(null);
   const topEl = useRef<HTMLElement>(null);
   const topObserver = useRef<IntersectionObserver>(null);
+  const router = useRouter();
 
   useEffect(() => {
     const observer = new IntersectionObserver(
@@ -59,6 +63,10 @@ export default function Snippets(props: SnippetsProps) {
 
     hljs.highlightAll();
   }, []);
+
+  useEffect(() => {
+    hljs.highlightAll();
+  }, [props.page]);
 
   useEffect(() => {
     const observer = topObserver.current;
@@ -84,11 +92,14 @@ export default function Snippets(props: SnippetsProps) {
             snippets={props.snippets}
           />
           <Pagination
-            currentPage={1}
-            pages={[1, 2, 3]}
-            setPage={(page: number) => {}}
-            onPrev={() => {}}
-            onNext={() => {}}
+            currentPage={props.page ?? 1}
+            pageCount={props.pageCount}
+            setPage={(page: number) =>
+              router.push({
+                pathname: routes.snippets,
+                query: { page },
+              })
+            }
           />
         </div>
         <FloatingButton

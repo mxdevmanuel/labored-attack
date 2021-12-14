@@ -39,8 +39,8 @@ export class SnippetsService {
     );
   }
 
-  async getCount(): Promise<number> {
-    return this.snippetRepository.count();
+  async getCount(options?: SnippetWhere): Promise<number> {
+    return this.snippetRepository.count(options);
   }
 
   async create(

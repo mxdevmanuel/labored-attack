@@ -40,6 +40,7 @@ export default class AuthHttpClient extends BaseHttpClient {
     deleteSnippet: '/snippets',
     getCount: '/snippets/count',
     getMySnippets: '/snippets/mine',
+    getMySnippetCount: '/snippets/mine/count',
     getSnippet: '/snippets',
     getSnippets: '/snippets',
     login: '/auth/login',
@@ -117,9 +118,19 @@ export default class AuthHttpClient extends BaseHttpClient {
     return response.data;
   }
 
-  async listMySnippets(): Promise<Snippet[]> {
+  async listMySnippets(options: PaginationDTO = { take }): Promise<Snippet[]> {
     const response = await this.instance.get<Snippet[]>(
       this.urls.getMySnippets,
+      {
+        params: options,
+      },
+    );
+    return response.data;
+  }
+
+  async getMySnippetCount(): Promise<number> {
+    const response = await this.instance.get<number>(
+      this.urls.getMySnippetCount,
     );
     return response.data;
   }
