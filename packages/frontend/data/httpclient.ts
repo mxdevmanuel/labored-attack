@@ -34,7 +34,7 @@ enum HttpStatus {
 
 export default class AuthHttpClient extends BaseHttpClient {
   static HttpErrors = HttpStatus;
-  protected token: string = null;
+  protected token: string | null = null;
   readonly urls: Record<string, string> = {
     createSnippet: '/snippets',
     deleteSnippet: '/snippets',
@@ -165,6 +165,9 @@ export default class AuthHttpClient extends BaseHttpClient {
   protected _initializeRequestInterceptor() {
     this.instance.interceptors.request.use((request: AxiosRequestConfig) => {
       if (this.token !== null) {
+        if (request.headers === undefined) {
+          request.headers = {};
+        }
         request.headers['Authorization'] = `Bearer ${this.token}`;
       }
       return request;

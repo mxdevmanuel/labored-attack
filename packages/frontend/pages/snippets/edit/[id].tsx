@@ -52,7 +52,7 @@ export default function Edit({ snippet }: EditProps) {
         <main>
           <section>
             <Editor
-              title="Edit snippet"
+              header="Edit snippet"
               snippet={snippet}
               onSave={(body: SnippetPutDTO) => {
                 let data: SnippetPutDTO = {

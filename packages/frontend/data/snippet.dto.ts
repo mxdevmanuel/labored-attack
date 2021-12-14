@@ -6,7 +6,7 @@ import { User } from './user.dto';
 
 export interface Snippet {
   id: string;
-  title?: string;
+  title?: string | null | undefined;
   language: string;
   code: string;
   owner: User;

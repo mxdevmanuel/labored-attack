@@ -25,8 +25,8 @@ export const generateInfoAlert = (
 ): AlertOptions => ({
   icon: <InfoIcon className="w-16 h-16 text-red-500" />,
   message,
-  onConfirm: options.onConfirm,
-  onCancel: options.onCancel,
+  onConfirm: options?.onConfirm,
+  onCancel: options?.onCancel,
   title: <span className="text-xl text-sky-600 text-bold">{title}</span>,
 });
 
@@ -41,11 +41,11 @@ export const generateWarningAlert = (
 ): AlertOptions => ({
   icon: <WarningIcon className="w-16 h-16 text-yellow-500" />,
   message,
-  onConfirm: options.onConfirm,
-  onCancel: options.onCancel,
+  onConfirm: options?.onConfirm,
+  onCancel: options?.onCancel,
   title: <span className="text-xl text-orange-800 text-bold">Warning</span>,
-  buttonText: options.confirmText,
-  buttonClasses: options.confirmClasses,
+  buttonText: options?.confirmText,
+  buttonClasses: options?.confirmClasses,
   containerClasses: 'animate__animated animate__jello',
 });
 

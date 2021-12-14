@@ -6,7 +6,7 @@ import routes from '@routing/routes';
 const menuItem = 'font-semibold hover:text-indigo-50';
 
 interface UserMenuProps {
-  caption: string;
+  caption?: string;
   logoutHandler: () => void;
 }
 export default function UserMenu({ caption, logoutHandler }: UserMenuProps) {

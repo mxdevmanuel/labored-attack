@@ -1,4 +1,4 @@
-import { useState } from 'react';
+import { ReactElement, useState } from 'react';
 import values from 'lodash/values';
 import clsx from 'clsx';
 
@@ -18,10 +18,10 @@ interface AlertProps {
   remove: () => void;
 }
 
-type UseAlertReturnType = [typeof Alert[], (options: AlertOptions) => void];
+type UseAlertReturnType = [ReactElement[], (options: AlertOptions) => void];
 
 export function useAlert(): UseAlertReturnType {
-  const [alerts, setAlerts] = useState([]);
+  const [alerts, setAlerts] = useState<ReactElement[]>([]);
 
   const addAlert = (options: AlertOptions) => {
     if (alerts.length === 0) {

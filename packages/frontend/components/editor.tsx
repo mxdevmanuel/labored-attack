@@ -25,24 +25,24 @@ const selectStyle =
 const editor =
   'absolute top-0 bottom-0 min-w-full p-2 rounded-lg overflow-auto focus:outline-none';
 
-interface EditorProps {
+interface EditorProps<T> {
   title: string;
   snippet?: Snippet;
   recover?: boolean;
-  onSave: (body: SnippetPostDTO | SnippetPutDTO) => void;
+  onSave: (body: T) => void;
   onCancel?: () => void;
   innerRef?: RefObject<HTMLButtonElement>;
 }
 
-export default function Editor(props: EditorProps) {
+export default function Editor<T = unknown>(props: EditorProps<T>) {
   const { snippet } = props;
-  const preRef = useRef<HTMLPreElement>();
-  const [title, setTitle] = useState<string>(null);
+  const preRef = useRef<HTMLPreElement>(null);
+  const [title, setTitle] = useState<string | null>(null);
   const [language, setLanguage] = useState<string>(
     snippet?.language ?? 'javascript',
   );
-  const [code, setCode] = useState<string>(null);
-  const [highlightedCode, setHighlightedCode] = useState<string>(null);
+  const [code, setCode] = useState<string>('');
+  const [highlightedCode, setHighlightedCode] = useState<string>('');
 
   useEffect(() => {
     if (!isNil(snippet)) {
@@ -91,12 +91,16 @@ export default function Editor(props: EditorProps) {
             }
           }}
           onScroll={(e: UIEvent<HTMLTextAreaElement>) => {
-            preRef.current.scrollTop = e.currentTarget.scrollTop;
-            preRef.current.scrollLeft = e.currentTarget.scrollLeft;
+            if (!isNil(preRef.current)) {
+              preRef.current.scrollTop = e.currentTarget.scrollTop;
+              preRef.current.scrollLeft = e.currentTarget.scrollLeft;
+            }
           }}
           onInput={(e: FormEvent<HTMLTextAreaElement>) => {
-            preRef.current.scrollTop = e.currentTarget.scrollTop;
-            preRef.current.scrollLeft = e.currentTarget.scrollLeft;
+            if (!isNil(preRef.current)) {
+              preRef.current.scrollTop = e.currentTarget.scrollTop;
+              preRef.current.scrollLeft = e.currentTarget.scrollLeft;
+            }
             let preproc: string = e.currentTarget.value;
             if (preproc.endsWith('\n')) {
               preproc += ' ';

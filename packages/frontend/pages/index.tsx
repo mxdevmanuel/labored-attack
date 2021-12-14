@@ -25,10 +25,10 @@ export default function Home() {
   const router = useRouter();
   const { current: client } = useRef(new HttpClient());
   const [alerts, addAlert] = useAlert();
-  const [snippet, setSnippet] = useState<Snippet>(null);
+  const [snippet, setSnippet] = useState<Snippet>();
   const onSave = (body: SnippetPostDTO) =>
     validateSnippetPostBody(body)
-      .then((errors: Record<string, string[]>) => {
+      .then((errors: Record<string, string[]> | undefined) => {
         if (isNil(errors)) {
           return client.createSnippet(body);
         } else {
@@ -61,7 +61,7 @@ export default function Home() {
         }
         if (
           error.name === 'AxiosError' &&
-          (error as AxiosError).response.status ===
+          (error as AxiosError).response?.status ===
             HttpClient.HttpErrors.UNAUTHORIZED
         ) {
           sessionStorage.setItem('body', JSON.stringify(body));
@@ -74,7 +74,7 @@ export default function Home() {
 
   useEffect(() => {
     if (router.query.back) {
-      const body: string = sessionStorage.getItem('body');
+      const body: string | null = sessionStorage.getItem('body');
       if (!isNil(body)) {
         const data: SnippetPostDTO = JSON.parse(body);
         setSnippet(data as Snippet);
@@ -92,7 +92,7 @@ export default function Home() {
         <main>
           <section>
             <Editor
-              title="Create new snippet"
+              header="Create new snippet"
               snippet={snippet}
               onSave={onSave}
             ></Editor>
