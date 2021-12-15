@@ -25,17 +25,17 @@ const selectStyle =
 const editor =
   'absolute top-0 bottom-0 min-w-full p-2 rounded-lg overflow-auto focus:outline-none';
 
-interface EditorProps<T> {
+interface EditorProps {
   title: string;
   snippet?: Snippet;
-  model: T;
   recover?: boolean;
-  onSave: (body: T) => void;
+  onCreate?: (body: SnippetPostDTO) => void;
+  onUpdate?: (body: SnippetPutDTO) => void;
   onCancel?: () => void;
   innerRef?: RefObject<HTMLButtonElement>;
 }
 
-export default function Editor<T = unknown>(props: EditorProps<T>) {
+export default function Editor(props: EditorProps) {
   const { snippet } = props;
   const preRef = useRef<HTMLPreElement>(null);
   const [title, setTitle] = useState<string | null>(null);
@@ -46,6 +46,9 @@ export default function Editor<T = unknown>(props: EditorProps<T>) {
   const [highlightedCode, setHighlightedCode] = useState<string>('');
 
   useEffect(() => {
+    if (isNil(props.onCreate) && isNil(props.onUpdate))
+      throw 'At least one of *onCreate* or *onUpdate* must be defined, if both defined, *onCreate* will take precedence';
+
     if (!isNil(snippet)) {
       setHighlightedCode(
         hljs.highlight(snippet.code, { language: snippet.language }).value,
@@ -140,7 +143,18 @@ export default function Editor<T = unknown>(props: EditorProps<T>) {
         </select>
         <button
           ref={props.innerRef}
-          onClick={() => props.onSave({ title, code, language })}
+          onClick={() => {
+            if (!isNil(props.onCreate)) {
+              props.onCreate({ title, code, language });
+            } else if (!(isNil(props.onUpdate) || isNil(snippet))) {
+              props.onUpdate({
+                id: snippet.id,
+                title,
+                code,
+                language,
+              });
+            }
+          }}
           className="rounded-lg px-8 py-2 my-auto bg-orange-400 text-white text-xl font-semibold"
         >
           Save

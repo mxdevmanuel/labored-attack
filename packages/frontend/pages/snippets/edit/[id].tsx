@@ -31,9 +31,9 @@ export async function getServerSideProps({
   params,
 }: GetServerSidePropsContext): Promise<GetServerSidePropsResult<EditProps>> {
   const client = new HttpClient();
-  let snippetId: string | string[] = params.id;
-  if (Array.isArray(params.id)) {
-    snippetId = params.id[0];
+  let snippetId: string | string[] | undefined = params?.id;
+  if (!isNil(snippetId) && Array.isArray(snippetId)) {
+    snippetId = snippetId[0];
   }
   const snippet = await client.getSnippet(snippetId as string);
   return { props: { snippet } };
@@ -52,16 +52,16 @@ export default function Edit({ snippet }: EditProps) {
         <main>
           <section>
             <Editor
-              header="Edit snippet"
+              title="Edit snippet"
               snippet={snippet}
-              onSave={(body: SnippetPutDTO) => {
+              onUpdate={(body: SnippetPutDTO) => {
                 let data: SnippetPutDTO = {
                   ...body,
                   id: router.query.id as string,
                 };
                 data = omitBy<SnippetPutDTO>(data, isNil) as SnippetPutDTO;
                 validateSnippetPutBody(data)
-                  .then((errors: Record<string, string[]>) => {
+                  .then((errors: Record<string, string[]> | undefined) => {
                     if (isNil(errors)) {
                       return client.updateSnippet(data);
                     } else {
@@ -97,7 +97,7 @@ export default function Edit({ snippet }: EditProps) {
                     }
                     if (
                       error.name === 'AxiosError' &&
-                      (error as AxiosError).response.status ===
+                      (error as AxiosError).response?.status ===
                         HttpClient.HttpErrors.UNAUTHORIZED
                     ) {
                       // TODO: refactor for edition exceptions

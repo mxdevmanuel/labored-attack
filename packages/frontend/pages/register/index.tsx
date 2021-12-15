@@ -6,6 +6,7 @@ import { useRef, useEffect, FormEvent, KeyboardEvent } from 'react';
 import { useRouter } from 'next/router';
 import Link from 'next/link';
 import TopologyBackground from '@components/topologybackground';
+import isEmpty from 'lodash/isEmpty';
 import {
   useAlert,
   generateErrorAlert,
@@ -33,7 +34,7 @@ export default function Register() {
 
   const onEnter = (e: KeyboardEvent<HTMLInputElement>) => {
     if (e.key === 'Enter') {
-      submitButton.current.click();
+      submitButton.current?.click();
     }
   };
   useEffect(() => {
@@ -141,10 +142,11 @@ const httpErrorExtractor = ({ response }: AxiosError): JSX.Element | string => {
   const status = response?.status;
   const data = response?.data;
 
-  let mtch: RegExpMatchArray;
+  let mtch: RegExpMatchArray | null;
   switch (status) {
     case HttpClient.HttpErrors.CONFLICT:
-      mtch = (data.detail as string)?.match(queryErrorRegex);
+      mtch = (data.detail as string)?.match(queryErrorRegex) ?? [];
+      if (!isEmpty(mtch)) return data.details;
       return (
         <p>
           {capitalize(mtch[1])} <span className="font-semibold">{mtch[2]}</span>{' '}

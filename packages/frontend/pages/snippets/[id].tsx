@@ -29,22 +29,22 @@ export async function getServerSideProps({
   try {
     const client = new HttpClient();
 
-    let snippetId = params.id;
-    if (Array.isArray(params.id)) {
-      snippetId = params.id[0];
+    let snippetId = params?.id;
+    if (Array.isArray(snippetId)) {
+      snippetId = snippetId[0];
     }
     const ret: SnippetByIdProps = {
       snippet: await client.getSnippet(snippetId as string),
     };
     return { props: ret };
-  } catch (err: any) {
+  } catch (err) {
     return { notFound: true };
   }
 }
 
 export default function SnippetById({ snippet }: SnippetByIdProps) {
   const { current: client } = useRef(new HttpClient());
-  const [profile, setProfile] = useState<Profile>(null);
+  const [profile, setProfile] = useState<Profile | undefined>();
   const router = useRouter();
   const [id, setId] = useState<string>('');
   const [alert, addAlert] = useAlert();
@@ -114,7 +114,7 @@ export default function SnippetById({ snippet }: SnippetByIdProps) {
                         onConfirm: () => {
                           client
                             .deleteSnippet(id)
-                            .then((success: true) => {
+                            .then((success: boolean) => {
                               if (success) {
                                 addAlert(
                                   generateSuccessAlert(

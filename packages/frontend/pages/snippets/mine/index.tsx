@@ -18,12 +18,12 @@ import 'highlight.js/styles/github.css';
 export default function MySnippets() {
   const { current: client } = useRef(new HttpClient());
   const scrollContainer = useRef<HTMLDivElement>(null);
-  const topObserver = useRef<IntersectionObserver>(null);
+  const topObserver = useRef<IntersectionObserver>();
   const router = useRouter();
 
   const [atTop, setAtTop] = useState<boolean>(true);
-  const [snippets, setSnippets] = useState<Snippet[]>(null);
-  const [top, setTop] = useState<HTMLElement>(null);
+  const [snippets, setSnippets] = useState<Snippet[] | null>(null);
+  const [top, setTop] = useState<HTMLElement | null>(null);
   const [page, setPage] = useState(1);
   const [pageCount, setPageCount] = useState(1);
 
@@ -42,7 +42,7 @@ export default function MySnippets() {
 
         if (err.name === 'AxiosError') {
           if (
-            (err as AxiosError).response.status ===
+            (err as AxiosError).response?.status ===
             HttpClient.HttpErrors.UNAUTHORIZED
           ) {
             router.replace({ pathname: routes.login });
@@ -70,10 +70,10 @@ export default function MySnippets() {
   useEffect(() => {
     const observer = topObserver.current;
     if (top) {
-      observer.observe(top);
+      observer?.observe(top);
     }
     return () => {
-      observer.disconnect();
+      observer?.disconnect();
     };
   }, [top]);
 
@@ -112,7 +112,7 @@ export default function MySnippets() {
           className="absolute right-10 bottom-20"
           visible={!atTop}
           onClick={() => {
-            scrollContainer.current.scrollTo({ top: 0, behavior: 'smooth' });
+            scrollContainer.current?.scrollTo({ top: 0, behavior: 'smooth' });
           }}
         >
           <UpIcon className="h-8 w-8 m-auto text-white" />

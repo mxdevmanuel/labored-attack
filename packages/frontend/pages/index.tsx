@@ -83,7 +83,6 @@ export default function Home() {
     }
   }, []);
 
-  const m: SnippetPostDTO = { title: null, code: '', language: 'javascript' };
   return (
     <Fragment>
       <Head title="Inicio" />
@@ -93,10 +92,9 @@ export default function Home() {
         <main>
           <section>
             <Editor
-              header="Create new snippet"
+              title="Create new snippet"
               snippet={snippet}
-              model={m}
-              onSave={onSave}
+              onCreate={onSave}
             ></Editor>
           </section>
         </main>

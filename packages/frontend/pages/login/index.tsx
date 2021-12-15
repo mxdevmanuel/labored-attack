@@ -33,7 +33,7 @@ export default function Login() {
   const submitButton = useRef<HTMLButtonElement>(null);
   const onEnter = (e: KeyboardEvent<HTMLInputElement>) => {
     if (e.key === 'Enter') {
-      submitButton.current.click();
+      submitButton.current?.click();
     }
   };
   const [alerts, addAlert] = useAlert();

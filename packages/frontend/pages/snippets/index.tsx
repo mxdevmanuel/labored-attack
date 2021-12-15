@@ -48,7 +48,7 @@ export default function Snippets(props: SnippetsProps) {
 
   const scrollContainer = useRef<HTMLDivElement>(null);
   const topEl = useRef<HTMLElement>(null);
-  const topObserver = useRef<IntersectionObserver>(null);
+  const topObserver = useRef<IntersectionObserver>();
   const router = useRouter();
 
   useEffect(() => {
@@ -71,10 +71,10 @@ export default function Snippets(props: SnippetsProps) {
   useEffect(() => {
     const observer = topObserver.current;
     if (topEl.current) {
-      observer.observe(topEl.current);
+      observer?.observe(topEl.current);
     }
     return () => {
-      observer.disconnect();
+      observer?.disconnect();
     };
   }, [topEl]);
 
@@ -106,7 +106,7 @@ export default function Snippets(props: SnippetsProps) {
           className="absolute right-10 bottom-20"
           visible={!atTop}
           onClick={() => {
-            scrollContainer.current.scrollTo({ top: 0, behavior: 'smooth' });
+            scrollContainer.current?.scrollTo({ top: 0, behavior: 'smooth' });
           }}
         >
           <UpIcon className="h-8 w-8 m-auto text-white" />
