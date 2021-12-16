@@ -1,23 +1,23 @@
-import isNil from 'lodash/isNil';
-import { useRouter } from 'next/router';
-import Head from '@components/head';
-import NavBar from '@components/navbar';
-import Editor from '@components/editor';
-import {
-  validateSnippetPostBody,
-  SnippetPostDTO,
-  Snippet,
-} from '@data/snippet.dto';
-import HttpClient from '@data/httpclient';
 import {
   useAlert,
   generateErrorAlert,
   generateSuccessAlert,
   validationToMsg,
 } from '@components/alerts';
-import { Fragment, useRef, useEffect, useState } from 'react';
-import { AxiosError } from 'axios';
+import Editor from '@components/editor';
+import Head from '@components/head';
+import NavBar from '@components/navbar';
+import HttpClient from '@data/httpclient';
+import {
+  validateSnippetPostBody,
+  SnippetPostDTO,
+  Snippet,
+} from '@data/snippet.dto';
 import routes from '@routing/routes';
+import { AxiosError } from 'axios';
+import isNil from 'lodash/isNil';
+import { useRouter } from 'next/router';
+import { Fragment, useRef, useEffect, useState } from 'react';
 
 type ValidationError = { name: string; errors: Record<string, string[]> };
 
