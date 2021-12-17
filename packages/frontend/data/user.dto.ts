@@ -1,6 +1,5 @@
 import { validate } from 'validate.js';
 import { Snippet } from './snippet.dto';
-import { z } from 'zod';
 
 export interface User {
   id: string;
@@ -9,11 +8,6 @@ export interface User {
   created: Date;
   updated: Date;
 }
-
-export const UserSchema = z.object({
-  id: z.string(),
-  username: z.string(),
-});
 
 export type ProfileDTO = Pick<User, 'username'> & { userId: string };
 export type Profile = Pick<User, 'id' | 'username'>;
