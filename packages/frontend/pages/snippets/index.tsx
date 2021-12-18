@@ -12,7 +12,7 @@ import routes from '@routing/routes';
 import hljs from 'highlight.js';
 import { GetServerSidePropsContext, GetServerSidePropsResult } from 'next';
 import { useRouter } from 'next/router';
-import { useEffect, useState, useRef } from 'react';
+import { useEffect, useState, useRef, StrictMode } from 'react';
 import 'highlight.js/styles/github.css';
 
 interface SnippetsProps {
@@ -81,37 +81,39 @@ export default function Snippets(props: SnippetsProps) {
   return (
     <>
       <Head title="snippets" />
-      <div
-        ref={scrollContainer}
-        className="h-screen overflow-y-scroll bg-sky-900 pb-5 -mb-5"
-      >
-        <Navbar innerRef={topEl} />
-        <div className="flex flex-col justify-center">
-          <List
-            className="w-full mx-5 lg:mx-auto lg:w-3/4"
-            snippets={props.snippets}
-          />
-          <Pagination
-            currentPage={props.page ?? 1}
-            pageCount={props.pageCount}
-            setPage={(page: number) =>
-              router.push({
-                pathname: routes.snippets,
-                query: { page },
-              })
-            }
-          />
-        </div>
-        <FloatingButton
-          className="absolute right-10 bottom-20"
-          visible={!atTop}
-          onClick={() => {
-            scrollContainer.current?.scrollTo({ top: 0, behavior: 'smooth' });
-          }}
+      <StrictMode>
+        <div
+          ref={scrollContainer}
+          className="h-screen overflow-y-scroll bg-sky-900 pb-5 -mb-5"
         >
-          <UpIcon className="h-8 w-8 m-auto text-white" />
-        </FloatingButton>
-      </div>
+          <Navbar innerRef={topEl} />
+          <div className="flex flex-col justify-center">
+            <List
+              className="w-full mx-5 lg:mx-auto lg:w-3/4"
+              snippets={props.snippets}
+            />
+            <Pagination
+              currentPage={props.page ?? 1}
+              pageCount={props.pageCount}
+              setPage={(page: number) =>
+                router.push({
+                  pathname: routes.snippets,
+                  query: { page },
+                })
+              }
+            />
+          </div>
+          <FloatingButton
+            className="absolute right-10 bottom-20"
+            visible={!atTop}
+            onClick={() => {
+              scrollContainer.current?.scrollTo({ top: 0, behavior: 'smooth' });
+            }}
+          >
+            <UpIcon className="h-8 w-8 m-auto text-white" />
+          </FloatingButton>
+        </div>
+      </StrictMode>
     </>
   );
 }

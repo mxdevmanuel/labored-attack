@@ -36,7 +36,9 @@ export default function MySnippets() {
         hljs.highlightAll();
         return client.getMySnippetCount();
       })
-      .then(setPageCount)
+      .then((count: number) => {
+        setPageCount(Math.ceil(count / take));
+      })
       .catch((err) => {
         console.error(err);
 

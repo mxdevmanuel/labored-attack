@@ -1,7 +1,9 @@
 import { languages } from '@data/constants';
 import { SnippetPostDTO, SnippetPutDTO, Snippet } from '@data/snippet.dto';
+import { baseButton } from '@styles/base';
 import clsx from 'clsx';
 import hljs from 'highlight.js';
+import 'highlight.js/styles/github.css';
 import isNil from 'lodash/isNil';
 import {
   UIEvent,
@@ -13,7 +15,6 @@ import {
   useEffect,
   useRef,
 } from 'react';
-import 'highlight.js/styles/github.css';
 
 // titleStyle: classes for white bg input with blue border
 const titleStyle =
@@ -155,7 +156,7 @@ export default function Editor(props: EditorProps) {
               });
             }
           }}
-          className="rounded-lg px-8 py-2 my-auto bg-orange-400 text-white text-xl font-semibold"
+          className={baseButton}
         >
           Save
         </button>

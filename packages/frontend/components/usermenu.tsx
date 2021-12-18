@@ -10,6 +10,7 @@ interface UserMenuProps {
   logoutHandler: () => void;
 }
 export default function UserMenu({ caption, logoutHandler }: UserMenuProps) {
+  // TODO: reactor popover panel for mobile
   return (
     <Popover className="relative">
       <Popover.Button className="text-orange-400 hover:text-orange-300 text-2xl px-4 py-2 mx-1">
