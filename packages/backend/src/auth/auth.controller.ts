@@ -65,4 +65,10 @@ export class AuthController {
   async getProfile(@Request() req: Req) {
     return req.user;
   }
+
+  @UseGuards(JwtAuthGuard)
+  @Post('profile')
+  async changeUserName(@Request() req: Req) {
+    return req.user;
+  }
 }
