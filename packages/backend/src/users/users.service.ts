@@ -4,7 +4,9 @@ import { Injectable } from '@nestjs/common';
 import { InjectRepository } from '@nestjs/typeorm';
 import { DisplayUser } from '@auth/auth.types';
 import * as bcrypt from 'bcryptjs';
+import * as _ from 'lodash';
 
+// TODO: refactor to automatically hide password from model
 @Injectable()
 export class UsersService {
   constructor(
@@ -24,5 +26,27 @@ export class UsersService {
       user,
     );
     return results;
+  }
+
+  async changeUsername(
+    oldUsername: string,
+    newUsername: string,
+  ): Promise<User> {
+    try {
+      const prospect = await this.userRepository.find({
+        where: { username: newUsername },
+      });
+      if (_.isNil(prospect)) {
+        const user = await this.userRepository.findOneOrFail({
+          where: { username: oldUsername },
+        });
+        user.username = newUsername;
+        await this.userRepository.save(user);
+        return user;
+      }
+      throw { name: 'UsernameExists', message: 'Username exists' };
+    } catch (err) {
+      throw err;
+    }
   }
 }
