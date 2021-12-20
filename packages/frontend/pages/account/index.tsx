@@ -1,10 +1,18 @@
-import ChangeUsername from '@components/changeusername';
+import {
+  useAlert,
+  generateErrorAlert,
+  generateSuccessAlert,
+  validationToMsg,
+} from '@components/alerts';
 import ChangePassword from '@components/changepassword';
+import ChangeUsername from '@components/changeusername';
 import Head from '@components/head';
 import Loading from '@components/loading';
 import Navbar from '@components/navbar';
 import HttpClient from '@data/httpclient';
-import { Profile } from '@data/user.dto';
+import { PasswordPutDTO, Profile, User, UsernamePutDTO } from '@data/user.dto';
+import { ValidationError } from '@errors/invaliddata.exception';
+import { httpErrorExtractor } from '@errors/utils';
 import routes from '@routing/routes';
 import { AxiosError } from 'axios';
 import clsx from 'clsx';
@@ -14,10 +22,11 @@ import { useEffect, useState, useRef, StrictMode } from 'react';
 const baseTitle = 'w-full text-indigo-200 text-left';
 const baseSection = 'w-full mx-5 lg:w-1/2 lg:mx-auto py-2';
 
-export default function MySnippets() {
+export default function Account() {
   const { current: client } = useRef(new HttpClient());
   const [profile, setProfile] = useState<Profile | undefined>();
   const router = useRouter();
+  const [alerts, addAlert] = useAlert();
 
   const getProfile = () => {
     client
@@ -44,6 +53,7 @@ export default function MySnippets() {
   return (
     <>
       <Head title="My account" />
+      {alerts}
       <div className="min-h-screen bg-sky-900 pb-5 -mb-5 font-publicsans">
         <Navbar />
         <StrictMode>
@@ -52,10 +62,64 @@ export default function MySnippets() {
               <h1 className={clsx(baseTitle, 'text-5xl')}>My account</h1>
             </div>
             <section className={baseSection}>
-              <ChangeUsername profile={profile} />
+              <ChangeUsername
+                profile={profile}
+                onSubmit={(data: UsernamePutDTO) => {
+                  client
+                    .changeUsername(data)
+                    .then((user: User) =>
+                      addAlert(
+                        generateSuccessAlert(
+                          `Username succesfully changed to ${user.username}`,
+                          () => router.reload(),
+                        ),
+                      ),
+                    )
+                    .catch((error: AxiosError | ValidationError) => {
+                      if (error.name === 'ValidationError') {
+                        addAlert(
+                          generateErrorAlert(
+                            validationToMsg((error as ValidationError).errors),
+                          ),
+                        );
+                      }
+                      if (error.name === 'AxiosError') {
+                        const msg = httpErrorExtractor(error as AxiosError);
+                        addAlert(generateErrorAlert(msg));
+                      }
+                    });
+                }}
+              />
             </section>
             <section className={baseSection}>
-              <ChangePassword />
+              <ChangePassword
+                onSubmit={(data: PasswordPutDTO) => {
+                  client
+                    .changePassword(data)
+                    .then((user: User) => {
+                      addAlert(
+                        generateSuccessAlert(
+                          'Password succesfully changed.',
+                          () => router.reload(),
+                        ),
+                      );
+                    })
+                    .catch((error: AxiosError | ValidationError) => {
+                      console.log(error);
+                      if (error.name === 'ValidationError') {
+                        addAlert(
+                          generateErrorAlert(
+                            validationToMsg((error as ValidationError).errors),
+                          ),
+                        );
+                      }
+                      if (error.name === 'AxiosError') {
+                        const msg = httpErrorExtractor(error as AxiosError);
+                        addAlert(generateErrorAlert(msg));
+                      }
+                    });
+                }}
+              />
             </section>
           </main>
         </StrictMode>

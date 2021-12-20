@@ -87,7 +87,6 @@ export default function Edit({ snippet }: EditProps) {
                     );
                   })
                   .catch((error: AxiosError | ValidationError) => {
-                    console.log(error);
                     if (error.name === 'ValidationError') {
                       addAlert(
                         generateErrorAlert(
@@ -101,7 +100,7 @@ export default function Edit({ snippet }: EditProps) {
                         HttpClient.HttpErrors.UNAUTHORIZED
                     ) {
                       // TODO: refactor for edition exceptions
-                      console.log(error);
+                      console.error(error);
                     }
                   });
               }}

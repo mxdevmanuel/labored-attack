@@ -9,6 +9,17 @@ export interface User {
   updated: Date;
 }
 
+const UserConstraints = {
+  id: { presence: { allowEmpty: false } },
+  username: { presence: { allowEmpty: false } },
+  snippets: { type: 'array' },
+};
+
+export const validateUser = async (
+  user: User,
+): Promise<Record<string, string[]> | undefined> =>
+  validate(user, UserConstraints);
+
 export type ProfileDTO = Pick<User, 'username'> & { userId: string };
 export type Profile = Pick<User, 'id' | 'username'>;
 
@@ -77,21 +88,41 @@ export const validateUserPostBody = async (
  * method: PUT
  *
  */
-export type UserPutDTO = Pick<User, 'id'> & PasswordDTO;
+export type UsernamePutDTO = Pick<User, 'username'>;
 
-const UserPutConstraints = {
+const UsernamePutConstraints = {
   username: {
+    presence: { allowEmpty: false },
+    length: { maximum: 50 },
+  },
+};
+
+export const validateUsernamePutBody = async (
+  body: UsernamePutDTO,
+): Promise<Record<string, string[]> | undefined> =>
+  validate(body, UsernamePutConstraints);
+
+/*
+ * Password update body DTO and validation
+ * method: PUT
+ *
+ */
+export type PasswordPutDTO = PasswordDTO;
+
+const PasswordPutConstraints = {
+  password: {
     presence: { allowEmpty: false },
   },
   confirmPassword: {
     presence: { allowEmpty: false },
+    equality: 'password',
   },
-  password: {
+  oldPassword: {
     presence: { allowEmpty: false },
   },
 };
 
-export const validateUserPutBody = async (
-  body: UserPutDTO,
+export const validatePasswordPutBody = async (
+  body: PasswordPutDTO,
 ): Promise<Record<string, string[]> | undefined> =>
-  validate(body, UserPutConstraints);
+  validate(body, PasswordPutConstraints);

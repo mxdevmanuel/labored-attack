@@ -30,7 +30,6 @@ const calculatePages = (currentPage: number, pageCount: number): number[] => {
 const Pagination = (props: PaginationProps) => {
   const { currentPage, pageCount } = props;
   const pages = calculatePages(currentPage, pageCount);
-  console.log(pages);
   return (
     <div className="flex flex-row justify-center bg-sky-900 font-publicsans font-semibold my-5">
       <div

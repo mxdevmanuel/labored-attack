@@ -1,3 +1,8 @@
+export type ValidationError = {
+  name: string;
+  errors: Record<string, string[]>;
+};
+
 export default class InvalidDataException extends Error {
   messages: Record<string, string[]>;
 

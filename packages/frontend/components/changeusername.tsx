@@ -1,16 +1,18 @@
 import PivotCaret from '@components/pivotcaret';
-import { Profile } from '@data/user.dto';
+import { Profile, UsernamePutDTO } from '@data/user.dto';
 import { baseInput, baseHeader, baseButton } from '@styles/base';
 import clsx from 'clsx';
-import { useState } from 'react';
+import { FormEvent, useRef, useState } from 'react';
 
 interface ChangeUsernameProps {
   containerClassname?: string;
   profile: Profile;
+  onSubmit: (data: UsernamePutDTO) => void;
 }
 
 const ChangeUsername = (props: ChangeUsernameProps) => {
   const [open, setOpen] = useState<boolean>(false);
+  const username = useRef<string>('');
   return (
     <div className={clsx(props.containerClassname)}>
       <h2
@@ -36,9 +38,19 @@ const ChangeUsername = (props: ChangeUsernameProps) => {
           placeholder={props.profile.username}
           id="current"
           type="text"
+          onInput={(e: FormEvent<HTMLInputElement>) =>
+            (username.current = e.currentTarget.value)
+          }
           className={clsx(baseInput)}
         />
-        <button className={baseButton}>Submit</button>
+        <button
+          onClick={() => {
+            props.onSubmit({ username: username.current });
+          }}
+          className={baseButton}
+        >
+          Submit
+        </button>
       </div>
     </div>
   );

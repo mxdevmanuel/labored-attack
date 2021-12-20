@@ -18,6 +18,11 @@ import {
   UserLoginDTO,
   validateUserPostBody,
   validateUserLoginBody,
+  UsernamePutDTO,
+  validateUsernamePutBody,
+  validateUser,
+  PasswordPutDTO,
+  validatePasswordPutBody,
 } from './user.dto';
 import InvalidDataException from '@errors/invaliddata.exception';
 import { AxiosRequestConfig, AxiosResponse, AxiosError } from 'axios';
@@ -36,15 +41,18 @@ export default class AuthHttpClient extends BaseHttpClient {
   static HttpErrors = HttpStatus;
   protected token: string | null = null;
   readonly urls: Record<string, string> = {
+    changeUsername: '/auth/profile/username',
+    changePassword: '/auth/profile/password',
     createSnippet: '/snippets',
     deleteSnippet: '/snippets',
     getCount: '/snippets/count',
-    getMySnippets: '/snippets/mine',
     getMySnippetCount: '/snippets/mine/count',
+    getMySnippets: '/snippets/mine',
     getSnippet: '/snippets',
     getSnippets: '/snippets',
     login: '/auth/login',
     logout: '/auth/logout',
+    profile: '/auth/profile',
     register: '/auth/register',
     updateSnippet: '/snippets',
   };
@@ -77,8 +85,48 @@ export default class AuthHttpClient extends BaseHttpClient {
   }
 
   async profile(): Promise<Profile> {
-    const { data } = await this.instance.get<ProfileDTO>('/auth/profile');
+    const { data } = await this.instance.get<ProfileDTO>(this.urls.profile);
     return { username: data.username, id: data.userId };
+  }
+
+  async changeUsername(data: UsernamePutDTO): Promise<User> {
+    const preValidation = await validateUsernamePutBody(data);
+    if (preValidation !== undefined) {
+      throw new InvalidDataException(
+        'Invalid change username data',
+        preValidation,
+      );
+    }
+    const response = await this.instance.put<User>(
+      this.urls.changeUsername,
+      data,
+    );
+
+    const postValidation = await validateUser(response.data);
+    if (postValidation !== undefined) {
+      throw new InvalidDataException('Invalid user data', postValidation);
+    }
+    return response.data;
+  }
+
+  async changePassword(data: PasswordPutDTO): Promise<User> {
+    const preValidation = await validatePasswordPutBody(data);
+    if (preValidation !== undefined) {
+      throw new InvalidDataException(
+        'Invalid change password data',
+        preValidation,
+      );
+    }
+    const response = await this.instance.put<User>(
+      this.urls.changePassword,
+      data,
+    );
+
+    const postValidation = await validateUser(response.data);
+    if (postValidation !== undefined) {
+      throw new InvalidDataException('Invalid user data', postValidation);
+    }
+    return response.data;
   }
 
   async createSnippet(data: SnippetPostDTO): Promise<Snippet> {
@@ -136,7 +184,6 @@ export default class AuthHttpClient extends BaseHttpClient {
   }
 
   async updateSnippet(data: SnippetPutDTO): Promise<Snippet> {
-    console.log(data);
     const validation = await validateSnippetPutBody(data);
     if (validation !== undefined) {
       throw new InvalidDataException('Invalid create user data', validation);

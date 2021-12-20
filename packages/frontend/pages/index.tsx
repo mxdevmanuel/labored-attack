@@ -13,13 +13,12 @@ import {
   SnippetPostDTO,
   Snippet,
 } from '@data/snippet.dto';
+import { ValidationError } from '@errors/invaliddata.exception';
 import routes from '@routing/routes';
 import { AxiosError } from 'axios';
 import isNil from 'lodash/isNil';
 import { useRouter } from 'next/router';
 import { Fragment, useRef, useEffect, useState } from 'react';
-
-type ValidationError = { name: string; errors: Record<string, string[]> };
 
 export default function Home() {
   const router = useRouter();

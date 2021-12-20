@@ -1,22 +1,21 @@
-import { Fragment } from 'react';
-import capitalize from 'lodash/capitalize';
-import Head from '@components/head';
-import { AxiosError } from 'axios';
-import { useRef, useEffect, FormEvent, KeyboardEvent } from 'react';
-import { useRouter } from 'next/router';
-import Link from 'next/link';
-import TopologyBackground from '@components/topologybackground';
-import isEmpty from 'lodash/isEmpty';
 import {
   useAlert,
   generateErrorAlert,
   generateSuccessAlert,
   validationToMsg,
 } from '@components/alerts';
+import Head from '@components/head';
 import NavBar from '@components/navbar';
+import TopologyBackground from '@components/topologybackground';
 import HttpClient from '@data/httpclient';
 import { validateUserPostBody, UserPostDTO, User } from '@data/user.dto';
+import { httpErrorExtractor } from '@errors/utils';
 import routes from '@routing/routes';
+import { AxiosError } from 'axios';
+import Link from 'next/link';
+import { useRouter } from 'next/router';
+import { Fragment } from 'react';
+import { useRef, useEffect, FormEvent, KeyboardEvent } from 'react';
 
 // loginInput: classes for white bg input with blue border
 const loginInput =
@@ -136,24 +135,3 @@ export default function Register() {
     </Fragment>
   );
 }
-
-const queryErrorRegex = /\(([A-z0-9]+)\)=\(([A-z0-9]+)\)(.*)/;
-const httpErrorExtractor = ({ response }: AxiosError): JSX.Element | string => {
-  const status = response?.status;
-  const data = response?.data;
-
-  let mtch: RegExpMatchArray | null;
-  switch (status) {
-    case HttpClient.HttpErrors.CONFLICT:
-      mtch = (data.detail as string)?.match(queryErrorRegex) ?? [];
-      if (!isEmpty(mtch)) return data.details;
-      return (
-        <p>
-          {capitalize(mtch[1])} <span className="font-semibold">{mtch[2]}</span>{' '}
-          {mtch[3]}
-        </p>
-      );
-    default:
-      return 'Unexpected Error';
-  }
-};

@@ -1,30 +1,32 @@
+import { LocalAuthGuard } from './local-auth.guard';
+import { JwtAuthGuard } from './jwt-auth.guard';
+import { UserPostDTO, UsernamePutDTO, PasswordPutDTO } from './auth.dto';
+import { AuthService } from './auth.service';
+import { DisplayUser, ValidatedTokenUser } from './auth.types';
+import { cookieConstants, jwtConstants } from './constants';
+import {
+  QueryFailedFilter,
+  EntityNotFoundFilter,
+} from '@database/database.filter';
 import {
   Controller,
   Get,
   Request,
   Response,
   Post,
+  Put,
   UseGuards,
   Body,
   UseFilters,
   HttpStatus,
   HttpCode,
 } from '@nestjs/common';
-import { Request as Req, Response as Res } from 'express';
-import { AuthService } from './auth.service';
-import { LocalAuthGuard } from './local-auth.guard';
-import { JwtAuthGuard } from './jwt-auth.guard';
-import { DisplayUser } from './auth.types';
-import { UserPostDTO } from './auth.dto';
 import { UsersService } from '@users/users.service';
-import {
-  QueryFailedFilter,
-  EntityNotFoundFilter,
-} from '@database/database.filter';
+import { Request as Req, Response as Res } from 'express';
 
 // IUGH
 import ms = require('ms');
-import { cookieConstants, jwtConstants } from './constants';
+import { WrongPasswordFilter } from './auth.filter';
 
 @Controller('auth')
 export class AuthController {
@@ -67,8 +69,34 @@ export class AuthController {
   }
 
   @UseGuards(JwtAuthGuard)
-  @Post('profile')
-  async changeUserName(@Request() req: Req) {
-    return req.user;
+  @Get('user')
+  async getUser(@Request() req: Req) {
+    return this.usersService.findById((req.user as ValidatedTokenUser).userId);
+  }
+
+  @UseGuards(JwtAuthGuard)
+  @Put('profile/username')
+  @UseFilters(QueryFailedFilter)
+  async changeUserName(
+    @Request() req: Req,
+    @Body() { username: newUsername }: UsernamePutDTO,
+  ) {
+    return this.usersService.changeUsername(
+      (req.user as ValidatedTokenUser)?.username,
+      newUsername,
+    );
+  }
+
+  @UseGuards(JwtAuthGuard)
+  @Put('profile/password')
+  @UseFilters(WrongPasswordFilter)
+  async changePassword(
+    @Request() req: Req,
+    @Body() { oldPassword, password }: PasswordPutDTO,
+  ) {
+    const userId = (req.user as ValidatedTokenUser).userId;
+    const { password: _password, ...user } =
+      await this.usersService.changePassword(userId, oldPassword, password);
+    return user;
   }
 }

@@ -31,7 +31,6 @@ export default function MySnippets() {
     client
       .listMySnippets({ skip: (page - 1) * take, take })
       .then((snippets: Snippet[]) => {
-        console.log(snippets);
         setSnippets(snippets);
         hljs.highlightAll();
         return client.getMySnippetCount();
@@ -65,7 +64,6 @@ export default function MySnippets() {
   }, []);
 
   useEffect(() => {
-    console.log('get happy');
     getSnippets();
   }, [page]);
 

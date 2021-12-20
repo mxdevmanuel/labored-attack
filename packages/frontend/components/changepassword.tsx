@@ -1,14 +1,19 @@
 import PivotCaret from '@components/pivotcaret';
+import { PasswordPutDTO } from '@data/user.dto';
 import { baseInput, baseHeader, baseButton } from '@styles/base';
 import clsx from 'clsx';
-import { useState } from 'react';
+import { FormEvent, useRef, useState } from 'react';
 
 interface ChangePasswordProps {
   containerClassname?: string;
+  onSubmit: (data: PasswordPutDTO) => void;
 }
 
 const ChangePassword = (props: ChangePasswordProps) => {
-  const [open, setOpen] = useState(false);
+  const [open, setOpen] = useState<boolean>(false);
+  const confirmPassword = useRef<string>('');
+  const currentPassword = useRef<string>('');
+  const newPassword = useRef<string>('');
   return (
     <div className={clsx(props.containerClassname)}>
       <h2
@@ -30,16 +35,48 @@ const ChangePassword = (props: ChangePasswordProps) => {
         <label htmlFor="current" className={clsx(baseHeader, 'text-2xl')}>
           Current password
         </label>
-        <input id="current" type="password" className={clsx(baseInput)} />
+        <input
+          onInput={(e: FormEvent<HTMLInputElement>) => {
+            currentPassword.current = e.currentTarget.value;
+          }}
+          id="current"
+          type="password"
+          className={clsx(baseInput)}
+        />
         <label htmlFor="new" className={clsx(baseHeader, 'text-2xl')}>
           New password
         </label>
-        <input id="new" type="password" className={clsx(baseInput)} />
+        <input
+          onInput={(e: FormEvent<HTMLInputElement>) => {
+            newPassword.current = e.currentTarget.value;
+          }}
+          id="new"
+          type="password"
+          className={clsx(baseInput)}
+        />
         <label htmlFor="confirm" className={clsx(baseHeader, 'text-2xl')}>
           Confirm new password
         </label>
-        <input id="confirm" type="password" className={clsx(baseInput)} />
-        <button className={baseButton}>Submit</button>
+        <input
+          onInput={(e: FormEvent<HTMLInputElement>) => {
+            confirmPassword.current = e.currentTarget.value;
+          }}
+          id="confirm"
+          type="password"
+          className={clsx(baseInput)}
+        />
+        <button
+          onClick={() =>
+            props.onSubmit({
+              password: newPassword.current,
+              oldPassword: currentPassword.current,
+              confirmPassword: confirmPassword.current,
+            })
+          }
+          className={baseButton}
+        >
+          Submit
+        </button>
       </div>
     </div>
   );
