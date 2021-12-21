@@ -21,7 +21,7 @@ const titleStyle =
   'placeholder-gray-400 text-orange-400 text-lg border-4 rounded-lg border-sky-700 px-4 py-2 my-4 focus:outline-none';
 // loginInput: classes for white bg input with blue border
 const selectStyle =
-  'bg-white placeholder-gray-400 text-sky-900 text-xl border-4 rounded-lg border-sky-700 px-4 py-2 my-2 w-1/3';
+  'bg-white placeholder-gray-400 text-sky-900 text-xl border-4 rounded-lg border-sky-700 px-4 py-1 my-2 w-3/4 lg:w-1/3';
 // editor: classed to match textarea and pre > code element for highlighted editor
 const editor =
   'absolute top-0 bottom-0 min-w-full p-2 rounded-lg overflow-auto focus:outline-none';
@@ -156,7 +156,7 @@ export default function Editor(props: EditorProps) {
               });
             }
           }}
-          className={baseButton}
+          className={clsx(baseButton, 'w-1/4 ml-5 lg:ml-0 lg:w-1/4')}
         >
           Save
         </button>

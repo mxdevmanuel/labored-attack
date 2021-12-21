@@ -19,8 +19,8 @@ import clsx from 'clsx';
 import { useRouter } from 'next/router';
 import { useEffect, useState, useRef, StrictMode } from 'react';
 
-const baseTitle = 'w-full text-indigo-200 text-left';
-const baseSection = 'w-full mx-5 lg:w-1/2 lg:mx-auto py-2';
+const baseTitle = 'text-indigo-200 text-left';
+const baseSection = 'w-full px-5 lg:w-1/2 lg:mx-auto py-2';
 
 export default function Account() {
   const { current: client } = useRef(new HttpClient());
@@ -67,15 +67,17 @@ export default function Account() {
                 onSubmit={(data: UsernamePutDTO) => {
                   client
                     .changeUsername(data)
-                    .then((user: User) =>
+                    .then((user: User) => {
+                      console.log('user');
                       addAlert(
                         generateSuccessAlert(
                           `Username succesfully changed to ${user.username}`,
                           () => router.reload(),
                         ),
-                      ),
-                    )
+                      );
+                    })
                     .catch((error: AxiosError | ValidationError) => {
+                      console.error(error);
                       if (error.name === 'ValidationError') {
                         addAlert(
                           generateErrorAlert(

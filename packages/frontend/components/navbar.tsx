@@ -101,11 +101,14 @@ export default function NavBar({
         <div className={clsx('flex flex-row h-full bg-sky-900 p-6 z-20', {})}>
           <Logo />
           <button onClick={() => setOpen(!open)}>
-            {open ? (
-              <CloseIcon className="text-indigo-200 hover:text-orange-400 w-9 h-9 m-auto cursor-pointer" />
-            ) : (
-              <BurguerIcon className="text-indigo-200 hover:text-orange-400 w-12 h-12 m-auto cursor-pointer" />
-            )}
+            {
+              /* TODO: Change this to a css animation */
+              open ? (
+                <CloseIcon className="text-indigo-200 hover:text-orange-400 w-9 h-9 m-auto cursor-pointer" />
+              ) : (
+                <BurguerIcon className="text-indigo-200 hover:text-orange-400 w-12 h-12 m-auto cursor-pointer" />
+              )
+            }
           </button>
         </div>
         <Transition

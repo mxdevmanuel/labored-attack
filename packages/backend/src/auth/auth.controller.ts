@@ -20,6 +20,7 @@ import {
   UseFilters,
   HttpStatus,
   HttpCode,
+  Logger,
 } from '@nestjs/common';
 import { UsersService } from '@users/users.service';
 import { Request as Req, Response as Res } from 'express';
@@ -34,6 +35,8 @@ export class AuthController {
     private authService: AuthService,
     private usersService: UsersService,
   ) {}
+
+  protected logger: Logger = new Logger(AuthController.name);
 
   @UseGuards(LocalAuthGuard)
   @UseFilters(EntityNotFoundFilter)
@@ -79,12 +82,22 @@ export class AuthController {
   @UseFilters(QueryFailedFilter)
   async changeUserName(
     @Request() req: Req,
+    @Response({ passthrough: true }) res: Res,
     @Body() { username: newUsername }: UsernamePutDTO,
   ) {
-    return this.usersService.changeUsername(
+    const user = await this.usersService.changeUsername(
       (req.user as ValidatedTokenUser)?.username,
       newUsername,
     );
+
+    const data = await this.authService.login(user as DisplayUser);
+    res.cookie(cookieConstants.name, data.access_token, {
+      maxAge: ms(jwtConstants.duration),
+      httpOnly: true,
+      signed: true,
+      // secure: true, // TODO: set environment conditional
+    });
+    return user;
   }
 
   @UseGuards(JwtAuthGuard)

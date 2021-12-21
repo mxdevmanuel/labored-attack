@@ -101,7 +101,7 @@ export default class AuthHttpClient extends BaseHttpClient {
       this.urls.changeUsername,
       data,
     );
-
+    console.log(response);
     const postValidation = await validateUser(response.data);
     if (postValidation !== undefined) {
       throw new InvalidDataException('Invalid user data', postValidation);
