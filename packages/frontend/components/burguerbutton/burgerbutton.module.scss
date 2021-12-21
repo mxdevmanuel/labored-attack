@@ -1,0 +1,79 @@
+$animation-curve: cubic-bezier(1, 0, 0, 1);
+$orange: #fb923c;
+$width: 2em;
+$height: 0.3em;
+
+.container,
+.toggler {
+  width: 3em;
+  height: 1.2em;
+  display: grid;
+  position: absolute;
+  margin-top: 1em;
+  right: 0;
+  align-items: center;
+  justify-content: center;
+}
+
+.state {
+  display: none;
+}
+
+.toggler {
+  opacity: 0;
+}
+
+.burguer {
+  width: $width;
+  height: $height;
+  background-color: $orange;
+  position: absolute;
+
+  &::before,
+  &::after {
+    content: '';
+    width: $width;
+    height: $height;
+    position: absolute;
+    display: block;
+    background-color: $orange;
+    transition: all 0.6s $animation-curve;
+  }
+
+  &::before {
+    top: -220%;
+    left: 0;
+    transform: rotateZ(0deg);
+    transform-origin: left top;
+  }
+
+  &::after {
+    top: 220%;
+    left: 0;
+    transform: rotateZ(0deg);
+    transform-origin: left bottom;
+  }
+}
+
+.state:checked ~ .burguer::before {
+  content: '';
+  background-color: $orange;
+  transform: rotateZ(45deg);
+  left: 1%;
+}
+
+.state:checked ~ .burguer::after {
+  content: '';
+  background-color: $orange;
+  transform: rotateZ(-45deg);
+  left: 1%;
+}
+
+.state:checked ~ .burguer {
+  background-color: transparent;
+}
+
+.state ~ .burger {
+  transition: all 0.7s $animation-curve;
+}
+

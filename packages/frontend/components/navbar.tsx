@@ -1,5 +1,4 @@
-import BurguerIcon from '@components/icons/burguer';
-import CloseIcon from '@components/icons/close';
+import BurguerButton from '@components/burguerbutton';
 import UserMenu from '@components/usermenu';
 import HttpClient from '@data/httpclient';
 import { Profile } from '@data/user.dto';
@@ -100,16 +99,11 @@ export default function NavBar({
       <div className="flex flex-col lg:hidden bg-sky-900">
         <div className={clsx('flex flex-row h-full bg-sky-900 p-6 z-20', {})}>
           <Logo />
-          <button onClick={() => setOpen(!open)}>
-            {
-              /* TODO: Change this to a css animation */
-              open ? (
-                <CloseIcon className="text-indigo-200 hover:text-orange-400 w-9 h-9 m-auto cursor-pointer" />
-              ) : (
-                <BurguerIcon className="text-indigo-200 hover:text-orange-400 w-12 h-12 m-auto cursor-pointer" />
-              )
-            }
-          </button>
+          <BurguerButton
+            className="w-16"
+            open={open}
+            toggle={() => setOpen(!open)}
+          />
         </div>
         <Transition
           show={open}
