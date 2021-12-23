@@ -1,16 +1,15 @@
 $animation-curve: cubic-bezier(1, 0, 0, 1);
 $orange: #fb923c;
-$width: 2em;
-$height: 0.3em;
+$width: 2.3em;
+$height: 0.35em;
 
 .container,
 .toggler {
-  width: 3em;
-  height: 1.2em;
+  width: inherit;
+  height: inherit;
   display: grid;
   position: absolute;
   margin-top: 1em;
-  right: 0;
   align-items: center;
   justify-content: center;
 }
@@ -28,6 +27,7 @@ $height: 0.3em;
   height: $height;
   background-color: $orange;
   position: absolute;
+  right: 0;
 
   &::before,
   &::after {

@@ -16,8 +16,12 @@ const BurguerButton = (props: BurguerButtonProps) => {
           checked={props.open}
           type="checkbox"
           className={styles.state}
+          readOnly
         />
-        <label htmlFor="toggle" className={styles.burguer}></label>
+        <label
+          htmlFor="toggle"
+          className={clsx(styles.burguer, { 'delay-300': !props.open })}
+        ></label>
       </div>
       <button
         className={clsx(styles.toggler, 'absolute')}

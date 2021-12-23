@@ -100,7 +100,7 @@ export default function NavBar({
         <div className={clsx('flex flex-row h-full bg-sky-900 p-6 z-20', {})}>
           <Logo />
           <BurguerButton
-            className="w-16"
+            className="w-1/4 m-3"
             open={open}
             toggle={() => setOpen(!open)}
           />
